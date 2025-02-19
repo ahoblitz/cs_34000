@@ -5,6 +5,8 @@
 This repository contains materials and examples for **CSCI 34000 - Discrete Mathematics** at Purdue University. The content includes examples, exercises, and notes implemented using **Maple** and **Mathematica** to assist with understanding discrete mathematical concepts.
 
 ## Repository Structure  
+- `ch1_maple/` – Chapter 1 examples in Maple  
+- `ch1_mathematica/` – Chapter 1 examples in Mathematica  
 - `ch2_maple/` – Chapter 2 examples in Maple  
 - `ch2_mathematica/` – Chapter 2 examples in Mathematica  
 - `ch3_maple/` – Chapter 3 examples in Maple  
