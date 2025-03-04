@@ -10,7 +10,9 @@ This repository contains materials and examples for **CSCI 34000 - Discrete Math
 - `ch2_maple/` – Chapter 2 examples in Maple  
 - `ch2_mathematica/` – Chapter 2 examples in Mathematica  
 - `ch3_maple/` – Chapter 3 examples in Maple  
-- `ch3_mathematica/` – Chapter 3 examples in Mathematica  
+- `ch3_mathematica/` – Chapter 3 examples in Mathematica
+- `ch4_maple/` – Chapter 4 examples in Maple  
+- `ch4_mathematica/` – Chapter 4 examples in Mathematica  
 
 ## Prerequisites  
 To run the files, ensure you have:  
