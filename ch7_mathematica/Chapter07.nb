@@ -1,0 +1,5526 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[    180527,       5517]
+NotebookOptionsPosition[    143795,       4540]
+NotebookOutlinePosition[    160999,       4896]
+CellTagsIndexPosition[    160587,       4880]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Discrete Probability", "BookChapterTitle",
+ CounterAssignments->{{"ChapterNumber", 7}}],
+
+Cell[CellGroupData[{
+
+Cell["Introduction", "Section"],
+
+Cell[TextData[{
+ "In this chapter you will learn how to use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to perform computations in discrete probability and how to use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s capabilities to explore concepts of discrete probability. We will \
+continue to make use of the functions described in the previous chapter. "
+}], "Text"],
+
+Cell["\<\
+We will make use of simulations to help explore concepts in discrete \
+probability. In this context, a simulation refers to a computer program that \
+models a real physical system. For example, instead of flipping an actual \
+coin one hundred times and recording whether each flip resulted in \
+\[OpenCurlyDoubleQuote]heads\[CloseCurlyDoubleQuote] or \
+\[OpenCurlyDoubleQuote]tails,\[CloseCurlyDoubleQuote] we could write a \
+program that uses random numbers to generate a sequence of one hundred \
+\[OpenCurlyDoubleQuote]heads\[CloseCurlyDoubleQuote] or \
+\[OpenCurlyDoubleQuote]tails.\[CloseCurlyDoubleQuote]\
+\>", "Text"],
+
+Cell[TextData[{
+ "Simulations are useful in discrete probability from two different \
+perspectives. First, they can help analyze and/or confirm probabilities for \
+systems that are difficult to compute deductively. For example, ",
+ StyleBox["Computations and Explorations 7",
+  FontSlant->"Italic"],
+ " from the text asks you to simulate the odd-person-out procedure in order \
+to confirm your deductive calculations. Second, simulations can be very \
+helpful as a way to better understand a problem and how to arrive at a \
+solution. For example, in the ",
+ StyleBox["Computer Projects 10",
+  FontSlant->"Italic"],
+ " exercise, you are asked to build a simulation of the famous Monty Hall \
+Three-Door problem. Building the simulation and analyzing the results can \
+help improve your understanding of the reasons why the strategy described in \
+the text is the best possible."
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["7.1 An Introduction to Discrete Probability", "Section",
+ CellTags->"Section1"],
+
+Cell["\<\
+To find the probability of an event in a finite sample space, you calculate \
+the number of times the event occurs and divide by the total number of \
+possible outcomes (the size of the sample space). \
+\>", "Text"],
+
+Cell["\<\
+As in Example 4, Section 7.1, we calculate the probability of winning a \
+lottery, where we need to choose 6 numbers correctly out of 40 possible \
+numbers. The total number of ways to choose 6 numbers is: \
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Binomial", "[", 
+  RowBox[{"40", ",", "6"}], "]"}]], "Input"],
+
+Cell[BoxData["3838380"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Since there is one winning combination, the probability is 1 divided by that \
+value.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"1", "/", 
+  RowBox[{"Binomial", "[", 
+   RowBox[{"40", ",", "6"}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["1", "3838380"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "We can find a real number approximation by using the ",
+ StyleBox[ButtonBox["N",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/N"], "FunctionLink"],
+ " function \[LongDash] evaluation as a floating point number. Given a single \
+argument, ",
+ StyleBox[ButtonBox["N",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/N"], "FunctionLink"],
+ " returns a numerical approximation of the value of the argument. With a \
+positive integer as a second argument, you can control the number of digits \
+of precision that are output."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"1", "/", 
+   RowBox[{"Binomial", "[", 
+    RowBox[{"40", ",", "6"}], "]"}]}], "]"}]], "Input"],
+
+Cell[BoxData["2.6052657631605`*^-7"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{
+   RowBox[{"1", "/", 
+    RowBox[{"Binomial", "[", 
+     RowBox[{"40", ",", "6"}], "]"}]}], ",", "20"}], "]"}]], "Input"],
+
+Cell[BoxData["2.6052657631605000026052657631605000026052657631605`20.*^-7"], \
+"Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "We could also force a decimal approximation of the result by using ",
+ StyleBox["1.0", "Input"],
+ " or simply ",
+ StyleBox["1.", "Input"],
+ ", to show that we wish to work with decimals instead of the exact rational \
+representation. For example, if we needed to choose from 50 numbers, the \
+probability is"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"1.0", "/", 
+  RowBox[{"Binomial", "[", 
+   RowBox[{"50", ",", "6"}], "]"}]}]], "Input"],
+
+Cell[BoxData["6.292988980976294`*^-8"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Continuing with this type of example, we define a function that computes \
+the probability of winning a lottery where 6 numbers must be matched out of \
+",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " possible numbers, provided that ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " is at least 6."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"lottery", "[", "n_Integer", "]"}], "/;", 
+   RowBox[{"n", "\[GreaterEqual]", "6"}]}], ":=", 
+  RowBox[{"1.0", "/", 
+   RowBox[{"Binomial", "[", 
+    RowBox[{"n", ",", "6"}], "]"}]}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+Then the probabilities above can be computed with the function. \
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"lottery", "[", "40", "]"}], ",", 
+   RowBox[{"lottery", "[", "50", "]"}]}], "}"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"2.6052657631605`*^-7", ",", "6.292988980976294`*^-8"}], 
+  "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Now we can use the ",
+ StyleBox[ButtonBox["Table",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Table"], "FunctionLink"],
+ " function to look at a list of probabilities for a range of values of ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " and graph these values with ",
+ StyleBox[ButtonBox["ListPlot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/ListPlot"], "FunctionLink"],
+ " to visualize how the number of possible values in the lottery affects the \
+probability of choosing the correct values."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"lotteryValues", "=", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"n", ",", 
+      RowBox[{"lottery", "[", "n", "]"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"n", ",", "40", ",", "50"}], "}"}]}], "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"40", ",", "2.6052657631605`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"41", ",", "2.2240073587955488`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"42", ",", "1.9062920218247562`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"43", ",", "1.6402977862213017`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"44", ",", "1.4166208153729424`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"45", ",", "1.2277380399898834`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"46", ",", "1.0675982956433769`*^-7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"47", ",", "9.313091515186905`*^-8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"48", ",", "8.148955075788542`*^-8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"49", ",", "7.151123842018516`*^-8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"50", ",", "6.292988980976294`*^-8"}], "}"}]}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListPlot", "[", "lotteryValues", "]"}]], "Input"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, 
+   {RGBColor[0.24720000000000014`, 0.24, 0.6], 
+    PointBox[{{40., 2.6052657631605*^-7}, {41., 2.2240073587955488`*^-7}, {
+     42., 1.9062920218247562`*^-7}, {43., 1.6402977862213017`*^-7}, {44., 
+     1.4166208153729424`*^-7}, {45., 1.2277380399898834`*^-7}, {46., 
+     1.0675982956433769`*^-7}, {47., 9.313091515186905*^-8}, {48., 
+     8.148955075788542*^-8}, {49., 7.151123842018516*^-8}, {50., 
+     6.292988980976294*^-8}}]}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->True,
+  AxesLabel->{None, None},
+  AxesOrigin->{40., 6.292988980976294*^-8},
+  Method->{},
+  PlotRange->{{40., 50.}, {6.292988980976294*^-8, 2.6052657631605*^-7}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{0.2, 0.2}, {3.951933730125742*^-9, 
+   3.951933730125742*^-9}}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Refer to Section 2.3 of this manual for information on the use of ",
+ StyleBox[ButtonBox["ListPlot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/ListPlot"], "FunctionLink"],
+ "."
+}], "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["7.2 Probability Theory", "Section",
+ CellTags->"Section2"],
+
+Cell[TextData[{
+ "We can use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to perform a variety of calculations of probabilities."
+}], "Text"],
+
+Cell["\<\
+For example, Example 9 in section 7.2 asks us to calculate the probability \
+that eight of the bits in a string of ten bits are 0s if the probability of a \
+0 bit is 0.9, the probability of a 1 bit is 0.1, and the bits are generated \
+independently. To perform this calculation, we can input the formula \
+directly: \
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Binomial", "[", 
+   RowBox[{"10", ",", "8"}], "]"}], "*", 
+  RowBox[{"0.9", "^", "8"}], "*", 
+  RowBox[{"0.1", "^", "2"}]}]], "Input"],
+
+Cell[BoxData["0.1937102445000001`"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Probability Distributions", "Subsection",
+ CellTags->"Section2a"],
+
+Cell[TextData[{
+ "We can think of this same question in terms of a random variable. \
+Specifically, consider a random variable ",
+ Cell[BoxData[
+  FormBox["X", TraditionalForm]]],
+ " that assigns to each string of ten bits the number of the bits that are \
+0s. Then the probability that eight of the ten bits were 0 is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"X", "=", "8"}], ")"}], TraditionalForm]]],
+ ". "
+}], "Text"],
+
+Cell["\<\
+In order to compute probabilities of events in terms of random variables, we \
+must specify the distribution of the random variable.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Computing Probabilities from Discrete Distributions", "Subsubsection"],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " provides many different probability distributions, including several \
+discrete distributions. To compute the probability of an event involving a \
+random variable distributed according to a built-in distribution, you can use \
+the ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ " or ",
+ StyleBox[ButtonBox["NProbability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/NProbability"], "FunctionLink"],
+ " functions. These functions are essentially identical, except ",
+ StyleBox[ButtonBox["NProbability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/NProbability"], "FunctionLink"],
+ " applies numerical methods to approximate a numerical answer, while ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ " uses symbolic methods. Using either function requires that we have a \
+distribution, so we begin by introducing ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "\[CloseCurlyQuote]s implementation of the binomial distribution."
+}], "Text"],
+
+Cell[TextData[{
+ "Theorem 2 in the textbook defines the binomial distribution, which is \
+implemented in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " as ",
+ StyleBox[ButtonBox["BinomialDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/BinomialDistribution"], "FunctionLink"],
+ ". The ",
+ StyleBox[ButtonBox["BinomialDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/BinomialDistribution"], "FunctionLink"],
+ " takes two parameters: the number of independent Bernoulli trials and the \
+probability of a success. For the bit string example that began this section, \
+there are 10 trials, and we interpret success to be a 0 bit, so the \
+probability of success is 0.9. The binomial distribution with these \
+parameters would be represented as shown below. Note that ",
+ StyleBox[ButtonBox["BinomialDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/BinomialDistribution"], "FunctionLink"],
+ " is not a function and evaluating the line below will do nothing."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"BinomialDistribution", "[", 
+  RowBox[{"10", ",", ".9"}], "]"}]], "myCode"],
+
+Cell[TextData[{
+ "The",
+ " ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ " and ",
+ StyleBox[ButtonBox["NProbability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/NProbability"], "FunctionLink"],
+ " functions expect two arguments. The first argument, written in terms of a \
+symbol representing a random variable, is an expression describing an event. \
+For example, to compute the probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"X", "=", "8"}], ")"}], TraditionalForm]]],
+ " in the bit-string example, the first argument would be ",
+ StyleBox["X==8", "Input"],
+ ". "
+}], "Text"],
+
+Cell[TextData[{
+ "The second argument to the ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ " and ",
+ StyleBox[ButtonBox["NProbability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/NProbability"], "FunctionLink"],
+ " functions is used to indicate the distribution. This is done using the ",
+ StyleBox[ButtonBox["Distributed",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Distributed"], "FunctionLink"],
+ " (\[Distributed]) function or operator. As a function, ",
+ StyleBox[ButtonBox["Distributed",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Distributed"], "FunctionLink"],
+ " requires two arguments: the symbol representing the random variable and \
+the representation of the distribution. To use the operator form, enter \
+\[EscapeKey]dist\[EscapeKey] to produce the \[Distributed] symbol. In this \
+case, the name of the random variable goes on the left and the distribution \
+on the right."
+}], "Text"],
+
+Cell[TextData[{
+ "Putting these two pieces together, the expression below computes the \
+probability of 8 successes for a binomial distribution with 10 trials and \
+probability of success ",
+ Cell[BoxData[
+  FormBox["0.9", TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[Equal]", "8"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"BinomialDistribution", "[", 
+     RowBox[{"10", ",", ".9"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["0.19371024449999932`"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Note that this is the same answer we found above using the formula. \
+\>", "Text"],
+
+Cell[TextData[{
+ "Related to the binomial distribution is the probability distribution of a \
+single Bernoulli trial. The ",
+ StyleBox[ButtonBox["BernoulliDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/BernoulliDistribution"], "FunctionLink"],
+ " takes only one parameter, the probability of success. The following \
+creates the random variable associated to a single trial with probability of \
+success 0.9. The possible values of a Bernoulli random variable are 0 or 1, \
+representing failure and success, respectively."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[Equal]", "0"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"BernoulliDistribution", "[", ".9", "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["0.09999999999999998`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Definition 1 of Section 7.1 defines the uniform distribution. ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " includes the distribution ",
+ StyleBox[ButtonBox["DiscreteUniformDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DiscreteUniformDistribution"], "FunctionLink"],
+ ". Note that this is different from ",
+ StyleBox[ButtonBox["UniformDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/UniformDistribution"], "FunctionLink"],
+ ", which is used for continuous random variables. The ",
+ StyleBox[ButtonBox["DiscreteUniformDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DiscreteUniformDistribution"], "FunctionLink"],
+ " requires a single argument, a list containing the lower and upper bounds \
+of the distribution. For example, the following computes the probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{
+     SuperscriptBox["X", "2"], "\[LessEqual]", "4"}], ")"}], 
+   TraditionalForm]]],
+ " for a random variable distributed uniformly on ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "10"}], ",", 
+     RowBox[{"-", "9"}], ",", "\[Ellipsis]", ",", "9", ",", "10"}], "}"}], 
+   TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"X", "^", "2"}], "\[LessEqual]", "4"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"DiscreteUniformDistribution", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "10"}], ",", "10"}], "}"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["5", "21"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Definition 2 of Section 7.4 defines the geometric distribution. ",
+ StyleBox["Mathematica ",
+  FontSlant->"Italic"],
+ "uses a slightly different definition of geometric distribution than the \
+textbook. In ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ ", the value of a random variable distributed geometrically is the number of \
+failures that occur before the first success, rather than the total number of \
+trials until the first success. The ",
+ StyleBox[ButtonBox["GeometricDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/GeometricDistribution"], "FunctionLink"],
+ " in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " requires one argument, the probability of success. The following computes \
+the probability that if a coin with probability of heads ",
+ Cell[BoxData[
+  FormBox["0.3", TraditionalForm]]],
+ " is flipped until it comes up heads, there will be at most 5 tails that \
+appear."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[LessEqual]", "5"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", ".3", "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["0.8823510000000001`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Note that you can form more complicated events by including Boolean \
+operators when building the event. For example, the probability that it \
+requires at most 2 or at least 7 flips of a coin with probability of heads ",
+ Cell[BoxData[
+  FormBox["0.3", TraditionalForm]]],
+ " before a heads comes up is:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"X", "\[LessEqual]", "2"}], "||", 
+    RowBox[{"X", "\[GreaterEqual]", "7"}]}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", ".3", "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["0.7393543`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " also makes it easy to work with multiple distributions. For example, \
+suppose you have two coins, one with probability of heads ",
+ Cell[BoxData[
+  FormBox["0.3", TraditionalForm]]],
+ " and the other with probability of heads ",
+ Cell[BoxData[
+  FormBox["0.25", TraditionalForm]]],
+ ". The probability that flipping each coin once will result in at least one \
+head can be computed as follows."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"X", "\[Equal]", "1"}], "||", 
+    RowBox[{"Y", "\[Equal]", "1"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"X", "\[Distributed]", 
+      RowBox[{"BernoulliDistribution", "[", ".3", "]"}]}], ",", 
+     RowBox[{"Y", "\[Distributed]", 
+      RowBox[{"BernoulliDistribution", "[", ".25", "]"}]}]}], "}"}]}], 
+  "]"}]], "Input"],
+
+Cell[BoxData["0.475`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Note that the second argument is a list whose elements define the \
+distributions for ",
+ StyleBox["X", "Input"],
+ " and ",
+ StyleBox["Y", "Input"],
+ ". "
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Graphing Probabilities", "Subsubsection"],
+
+Cell[TextData[{
+ "It is often useful to graph the probabilities associated to the values of a \
+random variable. To do this, we will apply the ",
+ StyleBox[ButtonBox["DiscretePlot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DiscretePlot"], "FunctionLink"],
+ " and ",
+ StyleBox[ButtonBox["PDF",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/PDF"], "FunctionLink"],
+ " functions."
+}], "Text"],
+
+Cell[TextData[{
+ "The ",
+ StyleBox[ButtonBox["DiscretePlot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DiscretePlot"], "FunctionLink"],
+ " function is the discrete analog of ",
+ StyleBox[ButtonBox["Plot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Plot"], "FunctionLink"],
+ ". Its first argument is an expression, the values of which are to be \
+plotted, in terms of a variable. The second is a domain specification, which \
+is of the same form as in a ",
+ StyleBox[ButtonBox["Table",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Table"], "FunctionLink"],
+ ": ",
+ Cell[BoxData[
+  RowBox[{"{", 
+   StyleBox["n", "CodeVar"], ",", 
+   StyleBox["max", "CodeVar"], "}"}]], "myCode"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"{", 
+   StyleBox["n", "CodeVar"], ",", 
+   StyleBox["min", "CodeVar"], ",", 
+   StyleBox["max", "CodeVar"], "}"}]], "myCode"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"{", 
+   StyleBox["n", "CodeVar"], ",", 
+   StyleBox["min", "CodeVar"], ",", 
+   StyleBox["max", "CodeVar"], ",", 
+   StyleBox["step", "CodeVar"], "}"}]], "myCode"],
+ ", or ",
+ Cell[BoxData[
+  RowBox[{"{", 
+   StyleBox["n", "CodeVar"], ",", 
+   StyleBox["list", "CodeVar"], "}"}]], "myCode"],
+ ", where ",
+ StyleBox["n", "CodeVar"],
+ " is the variable."
+}], "Text"],
+
+Cell[TextData[{
+ "For example, the following plots the values of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Pi]", "(", "x", ")"}], TraditionalForm]]],
+ ", the function defined to be the number of primes less than or equal to the \
+argument, for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"x", "\[Element]", 
+    RowBox[{"{", 
+     RowBox[{"2", ",", "3", ",", "\[Ellipsis]", ",", "50"}], "}"}]}], 
+   TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DiscretePlot", "[", 
+  RowBox[{
+   RowBox[{"PrimePi", "[", "n", "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"n", ",", "2", ",", "50"}], "}"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ GraphicsBox[{
+   {RGBColor[0.24720000000000014`, 0.24, 0.6], {
+     {RGBColor[0.24720000000000014`, 0.24, 0.6], Opacity[0.2], LineBox[{},
+       VertexColors->None]}, 
+     {RGBColor[0.24720000000000014`, 0.24, 0.6], Opacity[0.2], 
+      LineBox[{{{2., 1.}, {2., 0}}, {{3., 2.}, {3., 0}}, {{4., 2.}, {
+         4., 0}}, {{5., 3.}, {5., 0}}, {{6., 3.}, {6., 0}}, {{7., 4.}, {
+         7., 0}}, {{8., 4.}, {8., 0}}, {{9., 4.}, {9., 0}}, {{10., 4.}, {
+         10., 0}}, {{11., 5.}, {11., 0}}, {{12., 5.}, {12., 0}}, {{13., 6.}, {
+         13., 0}}, {{14., 6.}, {14., 0}}, {{15., 6.}, {15., 0}}, {{16., 6.}, {
+         16., 0}}, {{17., 7.}, {17., 0}}, {{18., 7.}, {18., 0}}, {{19., 8.}, {
+         19., 0}}, {{20., 8.}, {20., 0}}, {{21., 8.}, {21., 0}}, {{22., 8.}, {
+         22., 0}}, {{23., 9.}, {23., 0}}, {{24., 9.}, {24., 0}}, {{25., 9.}, {
+         25., 0}}, {{26., 9.}, {26., 0}}, {{27., 9.}, {27., 0}}, {{28., 9.}, {
+         28., 0}}, {{29., 10.}, {29., 0}}, {{30., 10.}, {30., 0}}, {{31., 
+         11.}, {31., 0}}, {{32., 11.}, {32., 0}}, {{33., 11.}, {33., 0}}, {{
+         34., 11.}, {34., 0}}, {{35., 11.}, {35., 0}}, {{36., 11.}, {
+         36., 0}}, {{37., 12.}, {37., 0}}, {{38., 12.}, {38., 0}}, {{39., 
+         12.}, {39., 0}}, {{40., 12.}, {40., 0}}, {{41., 13.}, {41., 0}}, {{
+         42., 13.}, {42., 0}}, {{43., 14.}, {43., 0}}, {{44., 14.}, {
+         44., 0}}, {{45., 14.}, {45., 0}}, {{46., 14.}, {46., 0}}, {{47., 
+         15.}, {47., 0}}, {{48., 15.}, {48., 0}}, {{49., 15.}, {49., 0}}, {{
+         50., 15.}, {50., 0}}},
+       VertexColors->None]}}}, 
+   {RGBColor[0.24720000000000014`, 0.24, 0.6], {}, PointBox[CompressedData["
+1:eJxd0jsKwkAQxvHByjKFhYWFCSIiIsb3O+tbW48gWHuFObJHUMmOMP+F8PHL
+bJhlJ+njdX9WRCT/Pr+MK5TxLsqsBv8+gWvB76vDDXzXhDO4BbfRpwN30bcH
+9+EBnOOcQ3iEc4/hCTyFZzGzmHN4AS/hFbyGNzHt3rZwEdPuMXgrLDvUYdmj
+bra5HLwVliPqZpvjyVvNNtezt8JyQd1s/8HVW2G5/f0BRWUv0w==
+     "]], {}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->True,
+  AxesOrigin->{2, 0},
+  Method->{"MessagesHead" -> DiscretePlot},
+  PlotRange->{{2, 50}, {0, 15.}},
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "By applying ",
+ StyleBox[ButtonBox["DiscretePlot",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DiscretePlot"], "FunctionLink"],
+ " with first argument an application of ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ ", we can get a picture of a distribution."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DiscretePlot", "[", 
+  RowBox[{
+   RowBox[{"Probability", "[", 
+    RowBox[{
+     RowBox[{"X", "\[Equal]", "n"}], ",", 
+     RowBox[{"X", "\[Distributed]", 
+      RowBox[{"BinomialDistribution", "[", 
+       RowBox[{"20", ",", ".3"}], "]"}]}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"n", ",", "20"}], "}"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ GraphicsBox[{
+   {RGBColor[0.24720000000000014`, 0.24, 0.6], {
+     {RGBColor[0.24720000000000014`, 0.24, 0.6], Opacity[0.2], LineBox[{},
+       VertexColors->None]}, 
+     {RGBColor[0.24720000000000014`, 0.24, 0.6], Opacity[0.2], 
+      LineBox[{{{1., 0.006839337111223886}, {1., 0}}, {{2., 
+         0.02784587252426865}, {2., 0}}, {{3., 0.07160367220526234}, {
+         3., 0}}, {{4., 0.1304209743738707}, {4., 0}}, {{5., 
+         0.1788630505698799}, {5., 0}}, {{6., 0.19163898275344207`}, {
+         6., 0}}, {{7., 0.16426198521723673`}, {7., 0}}, {{8., 
+         0.11439673970486067`}, {8., 0}}, {{9., 0.06536956554563499}, {
+         9., 0}}, {{10., 0.03081708090008507}, {10., 0}}, {{11., 
+         0.012006654896137031`}, {11., 0}}, {{12., 0.003859281930901166}, {
+         12., 0}}, {{13., 0.0010178325971607542`}, {13., 0}}, {{14., 
+         0.00021810698510587497`}, {14., 0}}, {{15., 
+         0.00003738976887529299}, {15., 0}}, {{16., 5.007558331512462*^-6}, {
+         16., 0}}, {{17., 5.049638653625986*^-7}, {17., 0}}, {{18., 
+         3.6068847525899964`*^-8}, {18., 0}}, {{19., 1.627166053800009*^-9}, {
+         19., 0}}, {{20., 3.486784400999994*^-11}, {20., 0}}},
+       VertexColors->None]}}}, 
+   {RGBColor[0.24720000000000014`, 0.24, 0.6], {}, PointBox[CompressedData["
+1:eJxTTMoPSmViYGAQAWIQDQEf7CUVGydPYK6xhwo4rGD0uL+geQ6Uz+GwSjXV
+bV7IJihfwEHz56XcRRsPQPkiDq86Qlj+PDkG5Us4lHqe8F3QfgLKl3F49dU2
+vZPtKJSv4LBI4+x5Kc+9UL6Sg7+4ThD/ng1QvopDMnu9V3PffChfzaHgx/MP
+H6d1QPkaDjEde0wb5uZD+VoO97ze5kquDYDydRwEzYv2lEzTgfL1HNrkpNfG
+zWKG8g0cZoXrq19muGoH4Rs6/LCt8Zj9cQGUb+Sw/W/vAefYZCjf2GF7437p
+qC/SUL6Jg0xCbqWZ9mFbAH5HU+s=
+     "]], {}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->True,
+  AxesOrigin->{1, 0},
+  Method->{"MessagesHead" -> DiscretePlot},
+  PlotRange->{{1, 20}, {0, 0.19163898275344207`}},
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}}]], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Conditional Probabilities", "Subsubsection"],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " allows you to calculate with conditional probabilities using the ",
+ StyleBox[ButtonBox["Conditioned",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Conditioned"], "FunctionLink"],
+ " (",
+ StyleBox["\[Conditioned]", "Input"],
+ ") operator. The operator symbol is entered by \[EscapeKey]cond\[EscapeKey]. \
+For example, consider a binomial random variable ",
+ Cell[BoxData[
+  FormBox["X", TraditionalForm]]],
+ " with parameters 20 and ",
+ Cell[BoxData[
+  FormBox["0.3", TraditionalForm]]],
+ ". The probability that ",
+ Cell[BoxData[
+  FormBox["X", TraditionalForm]]],
+ " is greater than 5 given that it is less than 10, that is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{
+     RowBox[{"X", ">", "5"}], "|", 
+     RowBox[{"X", "<", "10"}]}], ")"}], TraditionalForm]]],
+ " can be compute as shown below."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"X", ">", "5"}], "\[Conditioned]", 
+    RowBox[{"X", "<", "10"}]}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"BinomialDistribution", "[", 
+     RowBox[{"20", ",", ".3"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["0.5626531876399129`"], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Defining Distributions from Data", "Subsubsection"],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " provides the ",
+ StyleBox[ButtonBox["EmpiricalDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/EmpiricalDistribution"], "FunctionLink"],
+ " function to allow you to define, and thus compute with, discrete \
+probability distributions from your own data. There are two ways to use the \
+",
+ StyleBox[ButtonBox["EmpiricalDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/EmpiricalDistribution"], "FunctionLink"],
+ " function."
+}], "Text"],
+
+Cell[TextData[{
+ "If you have a list of values representing the results of experiments, you \
+can pass this list of data to ",
+ StyleBox[ButtonBox["EmpiricalDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/EmpiricalDistribution"], "FunctionLink"],
+ ". For example, suppose you manually roll a die 20 times and obtain the \
+following results."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"dieRolls", "=", 
+  RowBox[{"{", 
+   RowBox[{
+   "3", ",", "2", ",", "1", ",", "1", ",", "5", ",", "2", ",", "3", ",", "6", 
+    ",", "5", ",", "1", ",", "2", ",", "5", ",", "6", ",", "4", ",", "4", ",",
+     "3", ",", "1", ",", "3", ",", "1", ",", "1"}], "}"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "3", ",", "2", ",", "1", ",", "1", ",", "5", ",", "2", ",", "3", ",", "6", 
+   ",", "5", ",", "1", ",", "2", ",", "5", ",", "6", ",", "4", ",", "4", ",", 
+   "3", ",", "1", ",", "3", ",", "1", ",", "1"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "To use this as the basis for a distribution, simply give the list as the \
+argument to ",
+ StyleBox[ButtonBox["EmpiricalDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/EmpiricalDistribution"], "FunctionLink"],
+ ". We\[CloseCurlyQuote]ll assign the distribution to a symbol."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"dieDistribution", "=", 
+  RowBox[{"EmpiricalDistribution", "[", "dieRolls", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"DataDistribution", "[", "\[LeftSkeleton]", 
+   TagBox["\<\"Empirical\"\>",
+    Editable -> False], "\[RightSkeleton]", ",", 
+   TagBox[
+    RowBox[{"{", "20", "}"}],
+    Editable -> False], "]"}],
+  InterpretTemplate[DataDistribution[#, {{
+      Rational[3, 10], 
+      Rational[3, 20], 
+      Rational[1, 5], 
+      Rational[1, 10], 
+      Rational[3, 20], 
+      Rational[1, 10]}, {1, 2, 3, 4, 5, 6}, False}, 1, 
+    First[#2]]& ],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->True]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The output is giving you a peek at the internal representation of the \
+distribution. What\[CloseCurlyQuote]s important for us is that we can now use \
+",
+ StyleBox["dieDistribution", "Input"],
+ " as a probability distribution in functions like ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ ". For example, we can calculate the probability that the die shows a value \
+of 4 or less."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[LessEqual]", "4"}], ",", 
+   RowBox[{"X", "\[Distributed]", "dieDistribution"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["3", "4"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The second way you can use ",
+ StyleBox[ButtonBox["EmpiricalDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/EmpiricalDistribution"], "FunctionLink"],
+ " is to explicitly specify each data value and corresponding weights. As an \
+example, consider the following problem. A die is weighted so that the \
+probability of a 1 is ",
+ Cell[BoxData[
+  FormBox[
+   FractionBox["2", "9"], TraditionalForm]]],
+ ", the probability of a 2 is ",
+ Cell[BoxData[
+  FormBox[
+   FractionBox["1", "3"], TraditionalForm]]],
+ ", and the probability of the other values is ",
+ Cell[BoxData[
+  FormBox[
+   FractionBox["1", "9"], TraditionalForm]]],
+ " each. What is the probability that value is less than 3 when it is \
+rolled?"
+}], "Text"],
+
+Cell[TextData[{
+ "To specify probabilities associated to specific values, you need to list \
+the probabilities (or weights) and the values and join the two lists with a \
+",
+ StyleBox[ButtonBox["Rule",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Rule"], "FunctionLink"],
+ " (",
+ StyleBox["->", "Input"],
+ "). The following is the distribution of the die described above."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"EmpiricalDistribution", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"2", "/", "9"}], ",", 
+     RowBox[{"1", "/", "3"}], ",", 
+     RowBox[{"1", "/", "9"}], ",", 
+     RowBox[{"1", "/", "9"}], ",", 
+     RowBox[{"1", "/", "9"}], ",", 
+     RowBox[{"1", "/", "9"}]}], "}"}], "\[Rule]", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2", ",", "3", ",", "4", ",", "5", ",", "6"}], "}"}]}], 
+  "]"}]], "myCode"],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " interprets this as meaning that the data values in the right hand list are \
+weighted as per the corresponding entry in the left hand list. That is, 1 has \
+probability ",
+ Cell[BoxData[
+  FormBox[
+   FractionBox["2", "9"], TraditionalForm]]],
+ ", 2 has probability ",
+ Cell[BoxData[
+  FormBox[
+   FractionBox["1", "3"], TraditionalForm]]],
+ ", etc. Note that it is not necessary for the weights in the left hand list \
+to be probabilities. ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " computes the probabilities of the data values by dividing the \
+corresponding weight value by the sum of the weights. So the following will \
+also produce the correct distribution for the die."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"EmpiricalDistribution", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"2", ",", "3", ",", "1", ",", "1", ",", "1", ",", "1"}], "}"}], 
+   "\[Rule]", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2", ",", "3", ",", "4", ",", "5", ",", "6"}], "}"}]}], 
+  "]"}]], "myCode"],
+
+Cell[TextData[{
+ "The following, therefore, computes the probability that the value is less \
+than 3. Note that we use ",
+ StyleBox[ButtonBox["Range",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Range"], "FunctionLink"],
+ " rather than type the integers 1 through 6."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "<", "3"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"EmpiricalDistribution", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"2", ",", "3", ",", "1", ",", "1", ",", "1", ",", "1"}], "}"}],
+       "\[Rule]", 
+      RowBox[{"Range", "[", "6", "]"}]}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["5", "9"]], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Combining Empirical Distributions", "Subsubsection"],
+
+Cell[TextData[{
+ "A more interesting question is to compute probabilities for the sum of the \
+values on a weighted die. For example, consider two loaded dice. One is \
+weighted so that the probability that a 1 appears is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"2", "/", "7"}], TraditionalForm]]],
+ " and the probabilities of all other values is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "/", "7"}], TraditionalForm]]],
+ ". The other is weighted to that the probability of a 4 appearing is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"3", "/", "8"}], TraditionalForm]]],
+ " and the probabilities of all other values is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "/", "8"}], TraditionalForm]]],
+ ". What is the probability that the sum is 7 when the two dice are rolled?"
+}], "Text"],
+
+Cell["\<\
+To answer this question, we first define two empirical distributions, just as \
+done above. Here we assign the distributions to symbols.\
+\>", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"weighted1", "=", 
+   RowBox[{"EmpiricalDistribution", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"2", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1"}], "}"}], 
+     "\[Rule]", 
+     RowBox[{"Range", "[", "6", "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"weighted2", "=", 
+   RowBox[{"EmpiricalDistribution", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", "1", ",", "1", ",", "3", ",", "1", ",", "1"}], "}"}], 
+     "\[Rule]", 
+     RowBox[{"Range", "[", "6", "]"}]}], "]"}]}], ";"}]}], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+The example above using two Bernoulli distributions suggests that the \
+probability of the sum being 7 can be computed as below.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"X", "+", "Y"}], "\[Equal]", "7"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"X", "\[Distributed]", "weighted1"}], ",", 
+     RowBox[{"Y", "\[Distributed]", "weighted2"}]}], "}"}]}], "]"}]], "Input",\
+
+ InitializationCell->True],
+
+Cell[BoxData[
+ FractionBox["9", "56"]], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Sampling", "Subsubsection"],
+
+Cell[TextData[{
+ "Given a particular distribution, you may wish to use it to conduct \
+experiments or simulations. The process of generating pseudo-random numbers \
+according to a given probability distribution is referred to as sampling. In ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ ", the ",
+ StyleBox[ButtonBox["RandomVariate",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomVariate"], "FunctionLink"],
+ " function is used to sample."
+}], "Text"],
+
+Cell[TextData[{
+ "Recall that a random variable is a function that assigns a real number to \
+each possible outcome in a sample space (Definition 6 in Section 7.2 of the \
+textbook). A ",
+ StyleBox["random variate",
+  FontSlant->"Italic"],
+ " is a real number obtained by applying the random variable to an outcome \
+selected pseudo-randomly according to a specified probability distribution. \
+In other words, where a random variable describes the relationship between an \
+experiment\[CloseCurlyQuote]s sample space and real numbers, a random variate \
+is a particular value obtained by performing the experiment."
+}], "Text"],
+
+Cell[TextData[{
+ "Applying ",
+ StyleBox[ButtonBox["RandomVariate",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomVariate"], "FunctionLink"],
+ " to a probability distribution produces a single random sample from that \
+distribution. For example, the following expression simulates a binomial \
+experiment with 10 trials and probability of success ",
+ Cell[BoxData[
+  FormBox["0.4", TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RandomVariate", "[", 
+  RowBox[{"BinomialDistribution", "[", 
+   RowBox[{"10", ",", ".4"}], "]"}], "]"}]], "Input"],
+
+Cell[BoxData["4"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Providing a positive integer as a second argument produces a list of that \
+many values. For example, the following simulates a binomial process 1000 \
+times.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"binomialData", "=", 
+   RowBox[{"RandomVariate", "[", 
+    RowBox[{
+     RowBox[{"BinomialDistribution", "[", 
+      RowBox[{"20", ",", ".3"}], "]"}], ",", "1000"}], "]"}]}], 
+  ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[TextData[{
+ "We can use the ",
+ StyleBox[ButtonBox["Histogram",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Histogram"], "FunctionLink"],
+ " function to draw a histogram of the data. You see that the data produced \
+has approximately the same shape as was produced with ",
+ StyleBox[ButtonBox["PDF",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/PDF"], "FunctionLink"],
+ " above. We use the ",
+ StyleBox[ButtonBox["PlotRange",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/PlotRange"], "FunctionLink"],
+ " option, first described in Section 2.3, to ensure the graph shows all of \
+the possible values, not just those actually obtained."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Histogram", "[", 
+  RowBox[{"binomialData", ",", 
+   RowBox[{"PlotRange", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"0", ",", "20"}], "}"}], ",", "Full"}], "}"}]}]}], 
+  "]"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ GraphicsBox[
+  {RGBColor[0.798413061722744, 0.824719615472648, 0.968322270542458], 
+   EdgeForm[Opacity[0.595]], {}, 
+   {RGBColor[0.798413061722744, 0.824719615472648, 0.968322270542458], 
+    EdgeForm[Opacity[0.595]], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{0., 0}, {1., 1}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{17.5, 35.3}, {91.2175828902744, 93.2161637088185}}],
+       
+       StatusArea[#, 1]& ,
+       TagBoxNote->"1"],
+      StyleBox["1", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[1, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{1., 0}, {2., 3}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{34.3, 52.1}, {89.22042125318622, 93.2161637088185}}],
+       StatusArea[#, 3]& ,
+       TagBoxNote->"3"],
+      StyleBox["3", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[3, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{2., 0}, {3., 28}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{51.1, 68.9}, {64.25590078958392, 93.2161637088185}}],
+       StatusArea[#, 28]& ,
+       TagBoxNote->"28"],
+      StyleBox["28", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[28, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{3., 0}, {4., 68}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{67.9, 85.7}, {24.312668047820225`, 
+         93.2161637088185}}],
+       StatusArea[#, 68]& ,
+       TagBoxNote->"68"],
+      StyleBox["68", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[68, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{4., 0}, {5., 138}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{84.7, 102.5}, {-45.58798925026625, 
+         93.2161637088185}}],
+       StatusArea[#, 138]& ,
+       TagBoxNote->"138"],
+      StyleBox["138", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[138, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{5., 0}, {6., 183}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{101.5, 119.30000000000001`}, {-90.5241260847504, 
+         93.2161637088185}}],
+       StatusArea[#, 183]& ,
+       TagBoxNote->"183"],
+      StyleBox["183", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[183, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{6., 0}, {7., 180}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{118.30000000000001`, 
+         136.10000000000002`}, {-87.52838362911811, 93.2161637088185}}],
+       StatusArea[#, 180]& ,
+       TagBoxNote->"180"],
+      StyleBox["180", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[180, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{7., 0}, {8., 156}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{135.10000000000002`, 152.9}, {-63.56244398405991, 
+         93.2161637088185}}],
+       StatusArea[#, 156]& ,
+       TagBoxNote->"156"],
+      StyleBox["156", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[156, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{8., 0}, {9., 111}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{151.9, 169.70000000000002`}, {-18.62630714957575, 
+         93.2161637088185}}],
+       StatusArea[#, 111]& ,
+       TagBoxNote->"111"],
+      StyleBox["111", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[111, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{9., 0}, {10., 75}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{168.70000000000002`, 186.5}, {17.322602318011576`, 
+         93.2161637088185}}],
+       StatusArea[#, 75]& ,
+       TagBoxNote->"75"],
+      StyleBox["75", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[75, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{10., 0}, {11., 40}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{185.5, 203.3}, {52.272930967054805`, 
+         93.2161637088185}}],
+       StatusArea[#, 40]& ,
+       TagBoxNote->"40"],
+      StyleBox["40", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[40, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{11., 0}, {12., 11}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{202.3, 220.10000000000002`}, {81.23177470483348, 
+         93.2161637088185}}],
+       StatusArea[#, 11]& ,
+       TagBoxNote->"11"],
+      StyleBox["11", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[11, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{12., 0}, {13., 2}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{219.10000000000002`, 236.9}, {90.21900207173032, 
+         93.2161637088185}}],
+       StatusArea[#, 2]& ,
+       TagBoxNote->"2"],
+      StyleBox["2", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[2, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{13., 0}, {14., 3}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{235.9, 253.70000000000002`}, {89.22042125318622, 
+         93.2161637088185}}],
+       StatusArea[#, 3]& ,
+       TagBoxNote->"3"],
+      StyleBox["3", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[3, {
+        GrayLevel[0]}], "Tooltip"]& ], 
+    TagBox[
+     TooltipBox[
+      TagBox[
+       DynamicBox[{
+         FEPrivate`If[
+          CurrentValue["MouseOver"], 
+          EdgeForm[{
+            GrayLevel[0.5], 
+            AbsoluteThickness[1.5], 
+            Opacity[0.66]}], {}, {}], 
+         RectangleBox[{14., 0}, {15., 1}, "RoundingRadius" -> 0]},
+        ImageSizeCache->{{252.70000000000002`, 270.5}, {91.2175828902744, 
+         93.2161637088185}}],
+       StatusArea[#, 1]& ,
+       TagBoxNote->"1"],
+      StyleBox["1", {
+        GrayLevel[0]}, StripOnInput -> False]],
+     Annotation[#, 
+      Style[1, {
+        GrayLevel[0]}], "Tooltip"]& ]}, {}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0., 0},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  PlotRange->{{0, 20}, {All, All}},
+  PlotRangePadding->{{0, 0}, {
+     Scaled[0.02], 
+     Scaled[0.1]}},
+  Ticks->{Automatic, Automatic}]], "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Monte Carlo Methods", "Subsection",
+ PageBreakWithin->False,
+ CellTags->"Section2b"],
+
+Cell[TextData[{
+ "We can also implement Monte Carlo algorithms using ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ ". Miller's test for base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ " is described in the prelude to Exercise 44 of Section 4.4 of the textbook. \
+In that description, it is mentioned that a composite integer ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " passes Miller's test for base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ " for fewer than ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "/", "4"}], TraditionalForm]]],
+ " bases less than ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ ", and Exercise 44 asked you to show that primes pass Miller's test for all \
+bases that they do not divide. In other words, Miller's test is a \
+probabilistic primality test that fails less than one-fourth of the time. In \
+this subsection we'll use Miller's test to create a Monte Carlo primality \
+testing algorithm."
+}], "Text",
+ PageBreakAbove->False,
+ PageBreakWithin->False],
+
+Cell[CellGroupData[{
+
+Cell["Miller\[CloseCurlyQuote]s Test", "Subsubsection"],
+
+Cell[TextData[{
+ "First we must implement Miller's test for base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ ". Recall the description preceding Exercise 44 in Section 4.4. Let ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ " be positive integers. Assume ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " is a nonnegative integer and ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " is an odd positive integer such that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"n", "-", "1"}], "=", 
+    RowBox[{
+     SuperscriptBox["2", "s"], "t"}]}], TraditionalForm]]],
+ ". If ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["b", "t"], "\[Congruent]", 
+    RowBox[{"1", " ", 
+     RowBox[{"(", 
+      RowBox[{"mod", " ", "n"}], ")"}]}]}], TraditionalForm]]],
+ " or if there is a ",
+ Cell[BoxData[
+  FormBox["j", TraditionalForm]]],
+ " with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"0", "\[LessEqual]", "j", "\[LessEqual]", 
+    RowBox[{"s", "-", "1"}]}], TraditionalForm]]],
+ " such that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["b", 
+     RowBox[{
+      SuperscriptBox["2", "j"], "t"}]], "\[Congruent]", 
+    RowBox[{
+     RowBox[{"-", "1"}], " ", 
+     RowBox[{"(", 
+      RowBox[{"mod", " ", "n"}], ")"}]}]}], TraditionalForm]]],
+ ", then ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " is said to pass Miller's test for base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[TextData[{
+ "To implement Miller's test, we first must calculate ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ ". Initialize ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " to 0 and set ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " equal to ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "-", "1"}], TraditionalForm]]],
+ ". If ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " is even, we add 1 to ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " and divide ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " by 2. When ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " is no longer even, then ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " are the correct values."
+}], "Text"],
+
+Cell[TextData[{
+ "Once ",
+ Cell[BoxData[
+  FormBox["s", TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]]],
+ " have been calculated, we check the congruence ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["b", "t"], "\[Congruent]", 
+    RowBox[{"1", " ", 
+     RowBox[{"(", 
+      RowBox[{"mod", " ", "n"}], ")"}]}]}], TraditionalForm]]],
+ ". If that congruence is satisfied, then ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " passes Miller's test and we return ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ ". Otherwise, we begin testing the congruences ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["b", 
+     RowBox[{
+      SuperscriptBox["2", "j"], "t"}]], "\[Congruent]", 
+    RowBox[{
+     RowBox[{"-", "1"}], " ", 
+     RowBox[{"(", 
+      RowBox[{"mod", " ", "n"}], ")"}]}]}], TraditionalForm]]],
+ ". A ",
+ StyleBox[ButtonBox["For",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/For"], "FunctionLink"],
+ " loop assigns ",
+ Cell[BoxData[
+  FormBox["j", TraditionalForm]]],
+ " to each integer from 0 to ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"s", "-", "1"}], TraditionalForm]]],
+ " and inside the ",
+ StyleBox[ButtonBox["For",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/For"], "FunctionLink"],
+ " loop, the congruence is tested. If any congruence holds, the function \
+returns ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ ". (Recall from Section 4.1 of this manual that for exponentiation, ",
+ StyleBox[ButtonBox["PowerMod",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/PowerMod"], "FunctionLink"],
+ " applied to an integer, an exponent, and a base is much more efficient than \
+",
+ StyleBox[ButtonBox["Mod",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Mod"], "FunctionLink"],
+ ". However, it returns the smallest positive integer congruent to its first \
+argument modulo its second argument. That is, it will not return -1. Thus we \
+test for congruence to -1 modulo ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " by comparing the result to ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "-", "1"}], TraditionalForm]]],
+ ".) If the function completes without having returned ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ ", then it returns ",
+ StyleBox[ButtonBox["False",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/False"], "FunctionLink"],
+ "."
+}], "Text"],
+
+Cell[TextData[{
+ "Note that we use ",
+ StyleBox[ButtonBox["Catch",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Catch"], "FunctionLink"],
+ " and ",
+ StyleBox[ButtonBox["Throw",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Throw"], "FunctionLink"],
+ " in order to ensure that the result becomes the output of the function."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"miller", "[", 
+   RowBox[{"n_Integer", ",", "b_Integer"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"s", "=", "0"}], ",", 
+      RowBox[{"t", "=", 
+       RowBox[{"n", "-", "1"}]}], ",", "j"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Mod", "[", 
+         RowBox[{"t", ",", "2"}], "]"}], "\[Equal]", "0"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"t", "=", 
+         RowBox[{"t", "/", "2"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"s", "++"}]}]}], "\[IndentingNewLine]", "]"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Catch", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"PowerMod", "[", 
+           RowBox[{"b", ",", "t", ",", "n"}], "]"}], "\[Equal]", "1"}], ",", 
+         RowBox[{"Throw", "[", "True", "]"}]}], "]"}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"For", "[", 
+        RowBox[{
+         RowBox[{"j", "=", "0"}], ",", 
+         RowBox[{"j", "\[LessEqual]", 
+          RowBox[{"s", "-", "1"}]}], ",", 
+         RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"PowerMod", "[", 
+             RowBox[{"b", ",", 
+              RowBox[{
+               RowBox[{"2", "^", "j"}], "*", "t"}], ",", "n"}], "]"}], 
+            "\[Equal]", 
+            RowBox[{"n", "-", "1"}]}], ",", 
+           RowBox[{"Throw", "[", "True", "]"}]}], "]"}]}], 
+        "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+       RowBox[{"Throw", "[", "False", "]"}]}], "\[IndentingNewLine]", 
+      "]"}]}]}], "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Monte Carlo Primality Test", "Subsubsection"],
+
+Cell[TextData[{
+ "Now we use Miller's test to implement a Monte Carlo primality testing \
+algorithm, as described in Example 16 in section 7.2 of the text. The \
+question the Monte Carlo algorithm is going to answer is \
+\[OpenCurlyDoubleQuote]Is ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " composite?\[CloseCurlyDoubleQuote] for an integer ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ ". For each iteration, the algorithm will select a random base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ " with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "<", "b", "<", "n"}], TraditionalForm]]],
+ " and check to see if ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " passes Miller's test for base ",
+ Cell[BoxData[
+  FormBox["b", TraditionalForm]]],
+ ". If Miller's test returns false, then we know that ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " is composite and the Monte Carlo algorithm will return \
+\[OpenCurlyDoubleQuote]Composite.\[CloseCurlyDoubleQuote] If Miller's test \
+returns true, then the iteration results in \[OpenCurlyDoubleQuote]unknown\
+\[CloseCurlyDoubleQuote] and the next iteration is started. After 30 \
+iterations, if Miller's test has only resulted in true, then the algorithm \
+will return \[OpenCurlyDoubleQuote]Prime,\[CloseCurlyDoubleQuote] indicating \
+that it is very likely that the number is prime. Since Miller's test falsely \
+identifies a composite as prime less than one-fourth of the time, the \
+probability that the Monte Carlo algorithm with 30 trials will incorrectly \
+identify a composite number as prime is"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"1", "/", "4"}], ")"}], "^", "30"}], "//", "N"}]], "Input"],
+
+Cell[BoxData["8.673617379884035`*^-19"], "Output"]
+}, Open  ]],
+
+Cell["Here is the Miller Monte Carlo test:", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"millerMC", "[", "n_Integer", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "b", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"Catch", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Do", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"b", "=", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"2", ",", 
+             RowBox[{"n", "-", "1"}]}], "}"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"!", 
+            RowBox[{"miller", "[", 
+             RowBox[{"n", ",", "b"}], "]"}]}], ",", 
+           RowBox[{"Throw", "[", "\"\<Composite\>\"", "]"}]}], "]"}]}], 
+        "\[IndentingNewLine]", ",", 
+        RowBox[{"{", "30", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Throw", "[", "\"\<Prime\>\"", "]"}]}], "\[IndentingNewLine]", 
+     "]"}]}], "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[TextData[{
+ "Note the use of ",
+ StyleBox[ButtonBox["Do",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Do"], "FunctionLink"],
+ ", with second argument ",
+ StyleBox["{30}", "Input"],
+ ". This causes the body of the loop to be executed 30 times without \
+assigning a loop variable, which in this case is not needed. The ",
+ StyleBox[ButtonBox["RandomInteger",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomInteger"], "FunctionLink"],
+ " function applied to a list of two integers, with the first smaller than \
+the second, produces a randomly selected integer in the range specified by \
+the values."
+}], "Text"],
+
+Cell[TextData[{
+ "Now we use ",
+ StyleBox["millerMC", "Input"],
+ " to test an integer to see if it is prime. We can use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s ",
+ StyleBox[ButtonBox["Prime",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Prime"], "FunctionLink"],
+ " function to find the 40000th prime and then check that our algorithm \
+confirms that it is prime."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Prime", "[", "40000", "]"}]], "Input"],
+
+Cell[BoxData["479909"], "Output"]
+}, Open  ]],
+
+Cell["Now run the algorithm on this prime.", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"millerMC", "[", "479909", "]"}]], "Input"],
+
+Cell[BoxData["\<\"Prime\"\>"], "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["7.3 Bayes\[CloseCurlyQuote] Theorem", "Section",
+ CellTags->"Section3"],
+
+Cell[TextData[{
+ "Section 7.3 focuses on applications of Bayes' Theorem, which asserts that \
+for events ",
+ Cell[BoxData[
+  FormBox["E", TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox["F", TraditionalForm]]],
+ " from a sample space ",
+ Cell[BoxData[
+  FormBox["S", TraditionalForm]]],
+ " with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"p", "(", "E", ")"}], "\[NotEqual]", "0"}], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"p", "(", "F", ")"}], "\[NotEqual]", "0"}], TraditionalForm]]],
+ ", one has"
+}], "Text"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{"p", "(", 
+    RowBox[{"F", "|", "E"}], ")"}], "=", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"p", "(", 
+      RowBox[{"E", "|", "F"}], ")"}], 
+     RowBox[{"p", "(", "F", ")"}]}], 
+    RowBox[{
+     RowBox[{
+      RowBox[{"p", "(", 
+       RowBox[{"E", "|", "F"}], ")"}], 
+      RowBox[{"p", "(", "F", ")"}]}], "+", 
+     RowBox[{
+      RowBox[{"p", "(", 
+       RowBox[{"E", "|", 
+        OverscriptBox["F", "_"]}], ")"}], 
+      RowBox[{"p", "(", 
+       OverscriptBox["F", "_"], ")"}]}]}]]}], TraditionalForm]], "Equation"],
+
+Cell[TextData[{
+ "The text describes how to use this theorem to create a Bayesian spam \
+filter. We will use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to implement such a filter."
+}], "Text"],
+
+Cell[TextData[{
+ "Recall the notation from the text. A message is received containing the \
+word ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ ". The event ",
+ Cell[BoxData[
+  FormBox["S", TraditionalForm]]],
+ " will be the event that the message is spam and the event ",
+ Cell[BoxData[
+  FormBox["E", TraditionalForm]]],
+ " is the event that the message contains the word ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ ". If we assume that a message is as likely to be spam as not, so that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"p", "(", "S", ")"}], "=", 
+    RowBox[{
+     RowBox[{"p", "(", 
+      OverscriptBox["S", "_"], ")"}], "=", 
+     FractionBox["1", "2"]}]}], TraditionalForm]]],
+ ", then Bayes' Theorem tells us that the probability that the incoming \
+message is spam given that it contains the word ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ " is:"
+}], "Text"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{"p", "(", 
+    RowBox[{"S", "|", "E"}], ")"}], "=", 
+   FractionBox[
+    RowBox[{"p", "(", 
+     RowBox[{"E", "|", "S"}], ")"}], 
+    RowBox[{
+     RowBox[{"p", "(", 
+      RowBox[{"E", "|", "S"}], ")"}], "+", 
+     RowBox[{"p", "(", 
+      RowBox[{"E", "|", 
+       OverscriptBox["S", "_"]}], ")"}]}]]}], TraditionalForm]], "Equation"],
+
+Cell["\<\
+By estimating the conditional probabilities with empirical data, we can \
+compute an estimate that the given message is spam. \
+\>", "Text"],
+
+Cell[TextData[{
+ "Before building the spam filter, we will first need messages to serve as \
+spam and non-spam. For the spam messages, we will use the sonnets of William \
+Shakespeare, and for the non-spam messages, we will use sonnets written by \
+Shakespeare's contemporaries, Michael Drayton, Bartholomew Griffin, and \
+William Smith, published in the book ",
+ StyleBox["Elizabethan Sonnet Cycles",
+  FontSlant->"Italic"],
+ "."
+}], "Text"],
+
+Cell["\<\
+It may seem strange to consider Shakespeare's sonnets to be spam, but \
+consider the goals and methods of a Bayesian spam filter. The goal of a spam \
+filter is to filter out the \[OpenCurlyDoubleQuote]junk mail.\
+\[CloseCurlyDoubleQuote] But in the case of the Bayesian filter described by \
+the text, these filters work by comparing the specific words used by authors \
+of spam in contrast to authors of non-spam messages. Think about email \
+messages you receive from your classmates versus messages your professors may \
+send you. Chances are good that you and your peers use more slang and \
+generally less formal English when writing to each other than you and your \
+professor use when communicating. This applies to kinds of message writers \
+like peers versus professors, but it also can apply to individual message \
+writers, like a mathematics professor versus a literature professor. A \
+literature professor, for example, is not likely to use words like \
+\[OpenCurlyDoubleQuote]Bayes' Theorem\[CloseCurlyDoubleQuote] in an email to \
+you. A Bayesian spam filter can pick up on these differences in word choice \
+and filter messages based on the assumption that different authors generally \
+use different words. We will see, by comparing Shakespeare with other \
+Elizabethan sonnet writers, that a Bayesian filter can even distinguish one \
+author from others writing at the same time, for the same audience, and in a \
+similar form.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Obtaining Data", "Subsubsection"],
+
+Cell["\<\
+On the website for this manual, you will find these three files: \
+\[OpenCurlyDoubleQuote]ShakespeareData.txt\[CloseCurlyDoubleQuote], \
+\[OpenCurlyDoubleQuote]ElizabethanData.txt\[CloseCurlyDoubleQuote] and \
+\[OpenCurlyDoubleQuote]testMessages.txt\[CloseCurlyDoubleQuote]. The first \
+two contain the sonnets of Shakespeare and the other authors, respectively. \
+Five of Shakespeare's poems and five of the other authors' poems were \
+randomly selected and moved to the \[OpenCurlyDoubleQuote]testMessages.txt\
+\[CloseCurlyDoubleQuote] file. We will use our filter on the poems in this \
+file to determine which of them were written by Shakespeare and which were \
+not.\
+\>", "Text"],
+
+Cell[TextData[{
+ "Begin by downloading the three files and storing them in the same directory \
+as this ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " Notebook. Then load the three files and store the text in variables using \
+the ",
+ StyleBox[ButtonBox["Import",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Import"], "FunctionLink"],
+ " function, as shown below."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"shakespeare", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<ShakespeareData.txt\>\"", ",", 
+     RowBox[{"Path", "\[Rule]", 
+      RowBox[{"NotebookDirectory", "[", "]"}]}]}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"elizabethan", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<ElizabethanData.txt\>\"", ",", 
+     RowBox[{"Path", "\[Rule]", 
+      RowBox[{"NotebookDirectory", "[", "]"}]}]}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"test", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<testMessages.txt\>\"", ",", 
+     RowBox[{"Path", "\[Rule]", 
+      RowBox[{"NotebookDirectory", "[", "]"}]}]}], "]"}]}], ";"}]], "Input"],
+
+Cell[TextData[{
+ "The ",
+ StyleBox[ButtonBox["Import",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Import"], "FunctionLink"],
+ " function is able to load a variety of file types for processing with ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ ", including images, sounds, video, spreadsheets, and many others. In this \
+case, ",
+ StyleBox[ButtonBox["Import",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Import"], "FunctionLink"],
+ " loads the files, which consist exclusively of text, and stores them as a \
+string. The ",
+ StyleBox[ButtonBox["Path",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Path"], "FunctionLink"],
+ " option is used to tell ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " what directory on your computer contains the file. The ",
+ StyleBox[ButtonBox["NotebookDirectory",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/NotebookDirectory"], "FunctionLink"],
+ " function, which takes no arguments, returns the directory in which the \
+current notebook is stored. So provided that you downloaded the three data \
+files to the same directory as the one holding this notebook, the above \
+should load the three files. If not, you may need to move the files to the \
+correct location or specify the directory manually."
+}], "Text"],
+
+Cell[TextData[{
+ "If you inspect these files in a text editor, you will see that the sonnets \
+are separated by three ampersands (\[OpenCurlyDoubleQuote]&&&\
+\[CloseCurlyDoubleQuote]). The three expressions above store each of the \
+files as a single string. It would be more useful to store them as lists of \
+strings, with each sonnet being one element of a list. To separate the files \
+into lists, we use ",
+ StyleBox[ButtonBox["StringSplit",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringSplit"], "FunctionLink"],
+ "."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"sPoems", "=", 
+   RowBox[{"StringSplit", "[", 
+    RowBox[{"shakespeare", ",", "\"\<&&&\>\""}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ePoems", "=", 
+   RowBox[{"StringSplit", "[", 
+    RowBox[{"elizabethan", ",", "\"\<&&&\>\""}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"testPoems", "=", 
+   RowBox[{"StringSplit", "[", 
+    RowBox[{"test", ",", "\"\<&&&\>\""}], "]"}]}], ";"}]], "Input"],
+
+Cell[TextData[{
+ "The ",
+ StyleBox[ButtonBox["StringSplit",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringSplit"], "FunctionLink"],
+ " function splits the string in the first argument based on the pattern \
+given in the second argument. In this case, the pattern is the string \
+\[OpenCurlyDoubleQuote]&&&\[CloseCurlyDoubleQuote] so the ",
+ StyleBox[ButtonBox["StringSplit",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringSplit"], "FunctionLink"],
+ " command uses that pattern as a delimiter in the ",
+ StyleBox["shakespeare", "Input"],
+ ", ",
+ StyleBox["elizabethan", "Input"],
+ ", and ",
+ StyleBox["test", "Input"],
+ " strings to separate them into lists. Now that the \
+\[OpenCurlyDoubleQuote]messages\[CloseCurlyDoubleQuote] are prepared, we \
+begin building the filter."
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Estimating the Probabilities", "Subsubsection"],
+
+Cell[TextData[{
+ "The spam filter relies on two computations: first, the probability that a \
+message contains a word given that it is spam, and second, the probability \
+that a message contains the word given that it is not spam. That is, we will \
+need empirical estimates for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"E", "|", "S"}], ")"}], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"E", "|", 
+     OverscriptBox["S", "_"]}], ")"}], TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[TextData[{
+ "Following the notation of the textbook, for a word ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ ", let ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", "w", ")"}], TraditionalForm]]],
+ " be the estimate of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"E", "|", "S"}], ")"}], TraditionalForm]]],
+ ", the probability that a message contains ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ " given that it is spam. So ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", "w", ")"}], TraditionalForm]]],
+ " is the number of spam messages containing the word ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ " divided by the number of spam messages. Likewise, let ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"q", "(", "w", ")"}], TraditionalForm]]],
+ " be the estimate for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"E", "|", 
+     OverscriptBox["S", "_"]}], ")"}], TraditionalForm]]],
+ ", the probability that a message contains ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ " given that it is not spam. This is computed as the number of non-spam \
+messages containing ",
+ Cell[BoxData[
+  FormBox["w", TraditionalForm]]],
+ " divided by the number of non-spam messages."
+}], "Text"],
+
+Cell[TextData[{
+ "Counting the number of messages (i.e., poems) in each list can be done with \
+",
+ StyleBox[ButtonBox["Length",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Length"], "FunctionLink"],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "sPoems", "]"}]], "Input"],
+
+Cell[BoxData["149"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+(This is five less than the 154 sonnets that Shakespeare published, because \
+five of them were moved to the \[OpenCurlyDoubleQuote]testMessages.txt\
+\[CloseCurlyDoubleQuote] file as \[OpenCurlyDoubleQuote]unknown\
+\[CloseCurlyDoubleQuote] messages.)\
+\>", "Text"],
+
+Cell[TextData[{
+ "To count the number of messages that contain a particular word, we'll make \
+use of ",
+ StyleBox[ButtonBox["StringFreeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringFreeQ"], "FunctionLink"],
+ ". This function accepts as arguments a string and a string pattern and \
+returns true if the pattern does not appear in the string and false if it \
+does. As a first example, the following determines that the substring \
+\[OpenCurlyDoubleQuote]bc\[CloseCurlyDoubleQuote] does appear in the string \
+\[OpenCurlyDoubleQuote]abcdefg\[CloseCurlyDoubleQuote]."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringFreeQ", "[", 
+  RowBox[{"\"\<abcdefg\>\"", ",", "\"\<bc\>\""}], "]"}]], "Input"],
+
+Cell[BoxData["False"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+However, this is not quite sufficient to check for the presence of words. To \
+see why, consider the fifth sonnet.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sPoems", "[", 
+  RowBox[{"[", "5", "]"}], "]"}]], "Input"],
+
+Cell[BoxData["\<\"\\nThose hours, that with gentle work did frame\\nThe \
+lovely gaze where every eye doth dwell,\\nWill play the tyrants to the very \
+same\\nAnd that unfair which fairly doth excel;\\nFor never-resting time \
+leads summer on\\nTo hideous winter, and confounds him there;\\nSap checked \
+with frost, and lusty leaves quite gone,\\nBeauty o'er-snowed and bareness \
+every where:\\nThen were not summer's distillation left,\\nA liquid prisoner \
+pent in walls of glass,\\nBeauty's effect with beauty were bereft,\\nNor it, \
+nor no remembrance what it was:\\n  But flowers distill'd, though they with \
+winter meet,\\n  Leese but their show; their substance still lives \
+sweet.\\n\"\>"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "If you look carefully, you will see that this poem does not contain the \
+English word \[OpenCurlyDoubleQuote]so\[CloseCurlyDoubleQuote]. However, ",
+ StyleBox[ButtonBox["StringFreeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringFreeQ"], "FunctionLink"],
+ " returns false, indicating the presence of \[OpenCurlyDoubleQuote]so\
+\[CloseCurlyDoubleQuote]:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringFreeQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", "\"\<so\>\""}], "]"}]], "Input"],
+
+Cell[BoxData["False"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+The reason for this is the presence of the letters \[OpenCurlyDoubleQuote]so\
+\[CloseCurlyDoubleQuote] within the word \[OpenCurlyDoubleQuote]prisoner\
+\[CloseCurlyDoubleQuote] in line 10. To avoid this, we need to indicate that \
+the word being sought must be surrounded by characters that do not appear in \
+words. To do this, we\[CloseCurlyQuote]ll use the pattern\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Except", "[", 
+   RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], "~~", "\"\<so\>\"", "~~", 
+  RowBox[{"Except", "[", 
+   RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}]}]], "myCode"],
+
+Cell[TextData[{
+ "At the center of the pattern above is the word being sought, \
+\[OpenCurlyDoubleQuote]so\[CloseCurlyDoubleQuote]. On either side of \
+\[OpenCurlyDoubleQuote]so\[CloseCurlyDoubleQuote] we use two tildes, which is \
+the ",
+ StyleBox[ButtonBox["StringExpression",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringExpression"], "FunctionLink"],
+ " (",
+ StyleBox["~~", "Input"],
+ ") operator. You can think of ",
+ StyleBox["~~", "Input"],
+ " as a concatenation operator for string patterns. On the far sides of the \
+pattern is an application of ",
+ StyleBox[ButtonBox["Except",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Except"], "FunctionLink"],
+ ". Within a string pattern, ",
+ StyleBox[ButtonBox["Except",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Except"], "FunctionLink"],
+ " indicates that the pattern will match anything other than what is \
+described by its argument. Recall that our goal is to insist that the word \
+\[OpenCurlyDoubleQuote]so\[CloseCurlyDoubleQuote] be surrounded by non-word \
+characters. Putting all the characters allowed to be in words inside of ",
+ StyleBox[ButtonBox["Except",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Except"], "FunctionLink"],
+ " will accomplish this. ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " has a built-in symbol, ",
+ StyleBox[ButtonBox["WordCharacter",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/WordCharacter"], "FunctionLink"],
+ ", which stands for all letter and digit characters. We also recognize the \
+frequent use of apostrophes in Elizabethan writing, and so we want to allow \
+apostrophes within words. To do this, we use the ",
+ StyleBox[ButtonBox["Alternatives",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Alternatives"], "FunctionLink"],
+ " (",
+ StyleBox["|", "Input"],
+ ") operator and the string containing an apostrophe within the ",
+ StyleBox[ButtonBox["Except",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Except"], "FunctionLink"],
+ ". For string patterns, ",
+ StyleBox[ButtonBox["Alternatives",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Alternatives"], "FunctionLink"],
+ " (",
+ StyleBox["|", "Input"],
+ ") is the equivalent of a logical \[OpenCurlyDoubleQuote]or.\
+\[CloseCurlyDoubleQuote] Including the apostrophe will allow this pattern to \
+recognize the string \[OpenCurlyDoubleQuote]distill\[CloseCurlyQuote]d\
+\[CloseCurlyDoubleQuote] as a complete word instead of interpreting that \
+string as two words, \[OpenCurlyDoubleQuote]distill\[CloseCurlyDoubleQuote] \
+and \[OpenCurlyDoubleQuote]d\[CloseCurlyDoubleQuote]."
+}], "Text"],
+
+Cell[TextData[{
+ "Using the pattern above in ",
+ StyleBox[ButtonBox["StringFreeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringFreeQ"], "FunctionLink"],
+ " correctly determines that the word \[OpenCurlyDoubleQuote]so\
+\[CloseCurlyDoubleQuote] does not appear in poem 5."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringFreeQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", 
+   RowBox[{
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], "~~", "\"\<so\>\"", "~~", 
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["True"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Finally, ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " is, by default, case sensitive. This is a problem because ",
+ StyleBox[ButtonBox["StringFreeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringFreeQ"], "FunctionLink"],
+ " will not recognize the presence of a word if asked about the same word \
+with a different capitalization. For example, the following indicates that \
+\[OpenCurlyDoubleQuote]those\[CloseCurlyDoubleQuote], the first word of poem \
+five, is absent from it."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringFreeQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", 
+   RowBox[{
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], "~~", 
+    "\"\<those\>\"", "~~", 
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["True"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "To correct this, we use set the option ",
+ StyleBox[ButtonBox["IgnoreCase",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/IgnoreCase"], "FunctionLink"],
+ " to ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StringFreeQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", 
+   RowBox[{
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], "~~", 
+    "\"\<those\>\"", "~~", 
+    RowBox[{"Except", "[", 
+     RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}]}], ",", 
+   RowBox[{"IgnoreCase", "\[Rule]", "True"}]}], "]"}]], "Input"],
+
+Cell[BoxData["False"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "We use what we\[CloseCurlyQuote]ve done above as a model to create a \
+function that takes a poem and a word as arguments and returns ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ " if the word appears in the poem and ",
+ StyleBox[ButtonBox["False",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/False"], "FunctionLink"],
+ " if not."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"wordQ", "[", 
+   RowBox[{"poem_String", ",", "word_String"}], "]"}], ":=", 
+  RowBox[{"!", 
+   RowBox[{"StringFreeQ", "[", 
+    RowBox[{"poem", ",", 
+     RowBox[{
+      RowBox[{"Except", "[", 
+       RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], "~~", "word", "~~", 
+      RowBox[{"Except", "[", 
+       RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}]}], ",", 
+     RowBox[{"IgnoreCase", "\[Rule]", "True"}]}], "]"}]}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+This function tells us that poem 5 does not include the word \
+\[OpenCurlyDoubleQuote]so\[CloseCurlyDoubleQuote] but does contain the word \
+\[OpenCurlyDoubleQuote]those\[CloseCurlyDoubleQuote].\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wordQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", "\"\<so\>\""}], "]"}]], "Input"],
+
+Cell[BoxData["False"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wordQ", "[", 
+  RowBox[{
+   RowBox[{"sPoems", "[", 
+    RowBox[{"[", "5", "]"}], "]"}], ",", "\"\<those\>\""}], "]"}]], "Input"],
+
+Cell[BoxData["True"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Now that we have a function that determines whether or not a particular \
+word appears in a poem, we can determine the number of poems in a list that \
+contain the word. We can do this simply by looping over all the poems in a \
+list and incrementing a counter for those containing the word. Below, the ",
+ StyleBox[ButtonBox["Do",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Do"], "FunctionLink"],
+ " loop with second argument ",
+ StyleBox["{p,L}", "Input"],
+ " iterates over each poem ",
+ StyleBox["p", "Input"],
+ " in the list of poems ",
+ StyleBox["L", "Input"],
+ "."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"countMessages", "[", 
+   RowBox[{"word_String", ",", 
+    RowBox[{"L", ":", 
+     RowBox[{"{", "__String", "}"}]}]}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"count", "=", "0"}], ",", "p"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"Do", "[", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"wordQ", "[", 
+          RowBox[{"p", ",", "word"}], "]"}], ",", 
+         RowBox[{"count", "++"}]}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"p", ",", "L"}], "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+     "count"}]}], "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+For instance, we can see how many times Shakespeare uses the word \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote] in a sonnet.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"countMessages", "[", 
+  RowBox[{"\"\<fairest\>\"", ",", "sPoems"}], "]"}]], "Input"],
+
+Cell[BoxData["4"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+So the empirical probability that a sonnet contains the word \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote] given that it was \
+written by Shakespeare is:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"countMessages", "[", 
+   RowBox[{"\"\<fairest\>\"", ",", "sPoems"}], "]"}], "/", 
+  RowBox[{"Length", "[", "sPoems", "]"}]}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["4", "149"]], "Output"]
+}, Open  ]],
+
+Cell["\<\
+And the probability that a sonnet contains the word \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote] given that it was \
+written by one of our other authors is:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"countMessages", "[", 
+   RowBox[{"\"\<fairest\>\"", ",", "ePoems"}], "]"}], "/", 
+  RowBox[{"Length", "[", "ePoems", "]"}]}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["10", "173"]], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Applying Bayes' Theorem, we can compute the probability that a sonnet was \
+written by Shakespeare given that it contains the word \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote]:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"4", "/", "149"}], ")"}], "/", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"4", "/", "149"}], "+", 
+     RowBox[{"10", "/", "173"}]}], ")"}]}], "//", "N"}]], "Input"],
+
+Cell[BoxData["0.3171402383134739`"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+The above computation illustrates how to write a function to compute the \
+probability that a sonnet is spam (i.e., was written by Shakespeare) given \
+that it contains a specific word:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"pShakespeareGivenWord", "[", "word_String", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "sCount", ",", "eCount", ",", "pWordGivenS", ",", "pWordGivenNotS"}], 
+     "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"sCount", "=", 
+      RowBox[{"Length", "[", "sPoems", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"eCount", "=", 
+      RowBox[{"Length", "[", "ePoems", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"pWordGivenS", "=", 
+      RowBox[{
+       RowBox[{"countMessages", "[", 
+        RowBox[{"word", ",", "sPoems"}], "]"}], "/", "sCount"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"pWordGivenNotS", "=", 
+      RowBox[{
+       RowBox[{"countMessages", "[", 
+        RowBox[{"word", ",", "ePoems"}], "]"}], "/", "eCount"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"N", "[", 
+      RowBox[{"pWordGivenS", "/", 
+       RowBox[{"(", 
+        RowBox[{"pWordGivenS", "+", "pWordGivenNotS"}], ")"}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+For example, the probability that a sonnet is Shakespearean given that it \
+contains the word \[OpenCurlyDoubleQuote]beauty\[CloseCurlyDoubleQuote] is:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pShakespeareGivenWord", "[", "\"\<beauty\>\"", "]"}]], "Input"],
+
+Cell[BoxData["0.5446800629687935`"], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Using Multiple Words", "Subsubsection"],
+
+Cell[TextData[{
+ "We can improve the filter by using multiple words, rather than just one. \
+Using the notation of the text, let ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    SubscriptBox["w", "i"], ")"}], TraditionalForm]]],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"q", "(", 
+    SubscriptBox["w", "i"], ")"}], TraditionalForm]]],
+ " be the probabilities that a message contains word ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["w", "i"], TraditionalForm]]],
+ " given that it is spam and that it is not spam, respectively. Then the \
+probability that a message is spam given that it contains all of the words ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["w", "1"], ",", 
+    SubscriptBox["w", "2"], ",", "\[Ellipsis]", ",", 
+    SubscriptBox["w", "k"]}], TraditionalForm]]],
+ " is:"
+}], "Text"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{"r", "(", 
+    RowBox[{
+     SubscriptBox["w", "1"], ",", 
+     SubscriptBox["w", "2"], ",", "\[Ellipsis]", ",", 
+     SubscriptBox["w", "k"]}], ")"}], "=", 
+   FractionBox[
+    RowBox[{
+     UnderoverscriptBox["\[Product]", 
+      RowBox[{"i", "=", "1"}], "k",
+      LimitsPositioning->False], 
+     RowBox[{"p", "(", 
+      SubscriptBox["w", "i"], ")"}]}], 
+    RowBox[{
+     RowBox[{
+      UnderoverscriptBox["\[Product]", 
+       RowBox[{"i", "=", "1"}], "k",
+       LimitsPositioning->False], 
+      RowBox[{"p", "(", 
+       SubscriptBox["w", "i"], ")"}]}], "+", 
+     RowBox[{
+      UnderoverscriptBox["\[Product]", 
+       RowBox[{"i", "=", "1"}], "k",
+       LimitsPositioning->False], 
+      RowBox[{"q", "(", 
+       SubscriptBox["w", "i"], ")"}]}]}]]}], TraditionalForm]], "Equation"],
+
+Cell[TextData[{
+ "The ",
+ StyleBox[ButtonBox["Product",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Product"], "FunctionLink"],
+ " function is useful here. Recall that we compute ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    UnderoverscriptBox["\[Product]", 
+     RowBox[{"i", "\[Element]", "S"}], " ",
+     LimitsPositioning->False], 
+    SuperscriptBox["i", "2"]}], TraditionalForm]]],
+ " for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"S", "=", 
+    RowBox[{"{", 
+     RowBox[{"1", ",", "3", ",", "5", ",", "7", ",", "9"}], "}"}]}], 
+   TraditionalForm]]],
+ " with "
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Product", "[", 
+  RowBox[{
+   RowBox[{"i", "^", "2"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"i", ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "3", ",", "5", ",", "7", ",", "9"}], "}"}]}], "}"}]}],
+   "]"}]], "Input"],
+
+Cell[BoxData["893025"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+For instance, to compute the probability that a message contains the words \
+\[OpenCurlyDoubleQuote]from\[CloseCurlyDoubleQuote], \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote], and \
+\[OpenCurlyDoubleQuote]creatures\[CloseCurlyDoubleQuote]:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"S", "=", 
+   RowBox[{"{", 
+    RowBox[{
+    "\"\<from\>\"", ",", "\"\<fairest\>\"", ",", "\"\<creatures\>\""}], 
+    "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Product", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"countMessages", "[", 
+     RowBox[{"w", ",", "sPoems"}], "]"}], "/", 
+    RowBox[{"Length", "[", "sPoems", "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"w", ",", "S"}], "}"}]}], "]"}]}], "Input"],
+
+Cell[BoxData[
+ FractionBox["456", "3307949"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "We can modify our ",
+ StyleBox["pShakespeareGivenWord", "Input"],
+ " function to work on lists of words instead of single words by putting the \
+probability computations inside of ",
+ StyleBox[ButtonBox["Product",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Product"], "FunctionLink"],
+ " commands. It's also a good idea to protect against division by zero \
+errors, so we'll put the division inside of an if statement. This is needed \
+in case one or more of the selected words appears in none of the sonnets by \
+either author. In this case, we default to a probability of 0.5."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"pShakespeareGivenList", "[", "L_List", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"sCount", ",", "eCount", ",", "pGivenS", ",", "pGivenNotS"}], 
+     "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"sCount", "=", 
+      RowBox[{"Length", "[", "sPoems", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"eCount", "=", 
+      RowBox[{"Length", "[", "ePoems", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"pGivenS", "=", 
+      RowBox[{"Product", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"countMessages", "[", 
+          RowBox[{"w", ",", "sPoems"}], "]"}], "/", "sCount"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"w", ",", "L"}], "}"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"pGivenNotS", "=", 
+      RowBox[{"Product", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"countMessages", "[", 
+          RowBox[{"w", ",", "ePoems"}], "]"}], "/", "eCount"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"w", ",", "L"}], "}"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"pGivenS", "+", "pGivenNotS"}], "\[NotEqual]", "0"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"N", "[", 
+        RowBox[{"pGivenS", "/", 
+         RowBox[{"(", 
+          RowBox[{"pGivenS", "+", "pGivenNotS"}], ")"}]}], "]"}], ",", 
+       "\[IndentingNewLine]", "0.5"}], "\[IndentingNewLine]", "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+So the probability that a sonnet is by Shakespeare given that it contains the \
+words \[OpenCurlyDoubleQuote]from\[CloseCurlyDoubleQuote], \
+\[OpenCurlyDoubleQuote]fairest\[CloseCurlyDoubleQuote], and \
+\[OpenCurlyDoubleQuote]creatures\[CloseCurlyDoubleQuote] is:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pShakespeareGivenList", "[", 
+  RowBox[{"{", 
+   RowBox[{"\"\<from\>\"", ",", "\"\<fairest\>\"", ",", "\"\<creatures\>\""}],
+    "}"}], "]"}]], "Input"],
+
+Cell[BoxData["0.5516898107231202`"], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Selecting Test Words Randomly", "Subsubsection"],
+
+Cell[TextData[{
+ "Finally, we can use the ",
+ StyleBox[ButtonBox["RandomSample",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomSample"], "FunctionLink"],
+ " function to randomly select words from a test message, and then use those \
+randomly selected words to compute the probability that the message was \
+written by Shakespeare. Here's the first test message in \
+\[OpenCurlyDoubleQuote]testMessages.txt\[CloseCurlyDoubleQuote]:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"testPoems", "[", 
+  RowBox[{"[", "1", "]"}], "]"}]], "Input"],
+
+Cell[BoxData["\<\"When to the sessions of sweet silent thought\\nI summon up \
+remembrance of things past,\\nI sigh the lack of many a thing I sought,\\nAnd \
+with old woes new wail my dear time's waste:\\nThen can I drown an eye, \
+unused to flow,\\nFor precious friends hid in death's dateless night,\\nAnd \
+weep afresh love's long since cancell'd woe,\\nAnd moan the expense of many a \
+vanish'd sight:\\nThen can I grieve at grievances foregone,\\nAnd heavily \
+from woe to woe tell o'er\\nThe sad account of fore-bemoaned moan,\\nWhich I \
+new pay as if not paid before.\\n  But if the while I think on thee, dear \
+friend,\\n  All losses are restor'd and sorrows end.\\n\"\>"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "First we must separate the poem into individual words. We do this using ",
+ StyleBox[ButtonBox["StringSplit",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StringSplit"], "FunctionLink"],
+ ", which we used to split the data files into individual poems. Instead of \
+splitting on a special delimiter, such as \[OpenCurlyDoubleQuote]&&&\
+\[CloseCurlyDoubleQuote], we\[CloseCurlyQuote]ll use the pattern ",
+ StyleBox["Except[WordCharacter|\"'\"]]", "Input"],
+ " that we determined earlier expressed non-word characters. In order to \
+avoid having individual spaces in the list, which can happen when spaces and \
+punctuation appear together with ends of lines, we will follow the pattern \
+with the ",
+ StyleBox[ButtonBox["Repeated",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Repeated"], "FunctionLink"],
+ " (",
+ StyleBox["..", "Input"],
+ ") operator. This way, two spaces, or a period followed by a space, will \
+count as a single word delimiter."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"exampleTestWords", "=", 
+  RowBox[{"StringSplit", "[", 
+   RowBox[{
+    RowBox[{"testPoems", "[", 
+     RowBox[{"[", "1", "]"}], "]"}], ",", 
+    RowBox[{
+     RowBox[{"Except", "[", 
+      RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], ".."}]}], 
+   "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"When\"\>", ",", "\<\"to\"\>", ",", "\<\"the\"\>", 
+   ",", "\<\"sessions\"\>", ",", "\<\"of\"\>", ",", "\<\"sweet\"\>", 
+   ",", "\<\"silent\"\>", ",", "\<\"thought\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"summon\"\>", ",", "\<\"up\"\>", ",", "\<\"remembrance\"\>", 
+   ",", "\<\"of\"\>", ",", "\<\"things\"\>", ",", "\<\"past\"\>", 
+   ",", "\<\"I\"\>", ",", "\<\"sigh\"\>", ",", "\<\"the\"\>", 
+   ",", "\<\"lack\"\>", ",", "\<\"of\"\>", ",", "\<\"many\"\>", 
+   ",", "\<\"a\"\>", ",", "\<\"thing\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"sought\"\>", ",", "\<\"And\"\>", ",", "\<\"with\"\>", 
+   ",", "\<\"old\"\>", ",", "\<\"woes\"\>", ",", "\<\"new\"\>", 
+   ",", "\<\"wail\"\>", ",", "\<\"my\"\>", ",", "\<\"dear\"\>", 
+   ",", "\<\"time's\"\>", ",", "\<\"waste\"\>", ",", "\<\"Then\"\>", 
+   ",", "\<\"can\"\>", ",", "\<\"I\"\>", ",", "\<\"drown\"\>", 
+   ",", "\<\"an\"\>", ",", "\<\"eye\"\>", ",", "\<\"unused\"\>", 
+   ",", "\<\"to\"\>", ",", "\<\"flow\"\>", ",", "\<\"For\"\>", 
+   ",", "\<\"precious\"\>", ",", "\<\"friends\"\>", ",", "\<\"hid\"\>", 
+   ",", "\<\"in\"\>", ",", "\<\"death's\"\>", ",", "\<\"dateless\"\>", 
+   ",", "\<\"night\"\>", ",", "\<\"And\"\>", ",", "\<\"weep\"\>", 
+   ",", "\<\"afresh\"\>", ",", "\<\"love's\"\>", ",", "\<\"long\"\>", 
+   ",", "\<\"since\"\>", ",", "\<\"cancell'd\"\>", ",", "\<\"woe\"\>", 
+   ",", "\<\"And\"\>", ",", "\<\"moan\"\>", ",", "\<\"the\"\>", 
+   ",", "\<\"expense\"\>", ",", "\<\"of\"\>", ",", "\<\"many\"\>", 
+   ",", "\<\"a\"\>", ",", "\<\"vanish'd\"\>", ",", "\<\"sight\"\>", 
+   ",", "\<\"Then\"\>", ",", "\<\"can\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"grieve\"\>", ",", "\<\"at\"\>", ",", "\<\"grievances\"\>", 
+   ",", "\<\"foregone\"\>", ",", "\<\"And\"\>", ",", "\<\"heavily\"\>", 
+   ",", "\<\"from\"\>", ",", "\<\"woe\"\>", ",", "\<\"to\"\>", 
+   ",", "\<\"woe\"\>", ",", "\<\"tell\"\>", ",", "\<\"o'er\"\>", 
+   ",", "\<\"The\"\>", ",", "\<\"sad\"\>", ",", "\<\"account\"\>", 
+   ",", "\<\"of\"\>", ",", "\<\"fore\"\>", ",", "\<\"bemoaned\"\>", 
+   ",", "\<\"moan\"\>", ",", "\<\"Which\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"new\"\>", ",", "\<\"pay\"\>", ",", "\<\"as\"\>", 
+   ",", "\<\"if\"\>", ",", "\<\"not\"\>", ",", "\<\"paid\"\>", 
+   ",", "\<\"before\"\>", ",", "\<\"But\"\>", ",", "\<\"if\"\>", 
+   ",", "\<\"the\"\>", ",", "\<\"while\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"think\"\>", ",", "\<\"on\"\>", ",", "\<\"thee\"\>", 
+   ",", "\<\"dear\"\>", ",", "\<\"friend\"\>", ",", "\<\"All\"\>", 
+   ",", "\<\"losses\"\>", ",", "\<\"are\"\>", ",", "\<\"restor'd\"\>", 
+   ",", "\<\"and\"\>", ",", "\<\"sorrows\"\>", ",", "\<\"end\"\>"}], 
+  "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "We apply ",
+ StyleBox[ButtonBox["DeleteDuplicates",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/DeleteDuplicates"], "FunctionLink"],
+ " to remove repeated words."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"exampleTestWords", "=", 
+  RowBox[{"DeleteDuplicates", "[", "exampleTestWords", "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"When\"\>", ",", "\<\"to\"\>", ",", "\<\"the\"\>", 
+   ",", "\<\"sessions\"\>", ",", "\<\"of\"\>", ",", "\<\"sweet\"\>", 
+   ",", "\<\"silent\"\>", ",", "\<\"thought\"\>", ",", "\<\"I\"\>", 
+   ",", "\<\"summon\"\>", ",", "\<\"up\"\>", ",", "\<\"remembrance\"\>", 
+   ",", "\<\"things\"\>", ",", "\<\"past\"\>", ",", "\<\"sigh\"\>", 
+   ",", "\<\"lack\"\>", ",", "\<\"many\"\>", ",", "\<\"a\"\>", 
+   ",", "\<\"thing\"\>", ",", "\<\"sought\"\>", ",", "\<\"And\"\>", 
+   ",", "\<\"with\"\>", ",", "\<\"old\"\>", ",", "\<\"woes\"\>", 
+   ",", "\<\"new\"\>", ",", "\<\"wail\"\>", ",", "\<\"my\"\>", 
+   ",", "\<\"dear\"\>", ",", "\<\"time's\"\>", ",", "\<\"waste\"\>", 
+   ",", "\<\"Then\"\>", ",", "\<\"can\"\>", ",", "\<\"drown\"\>", 
+   ",", "\<\"an\"\>", ",", "\<\"eye\"\>", ",", "\<\"unused\"\>", 
+   ",", "\<\"flow\"\>", ",", "\<\"For\"\>", ",", "\<\"precious\"\>", 
+   ",", "\<\"friends\"\>", ",", "\<\"hid\"\>", ",", "\<\"in\"\>", 
+   ",", "\<\"death's\"\>", ",", "\<\"dateless\"\>", ",", "\<\"night\"\>", 
+   ",", "\<\"weep\"\>", ",", "\<\"afresh\"\>", ",", "\<\"love's\"\>", 
+   ",", "\<\"long\"\>", ",", "\<\"since\"\>", ",", "\<\"cancell'd\"\>", 
+   ",", "\<\"woe\"\>", ",", "\<\"moan\"\>", ",", "\<\"expense\"\>", 
+   ",", "\<\"vanish'd\"\>", ",", "\<\"sight\"\>", ",", "\<\"grieve\"\>", 
+   ",", "\<\"at\"\>", ",", "\<\"grievances\"\>", ",", "\<\"foregone\"\>", 
+   ",", "\<\"heavily\"\>", ",", "\<\"from\"\>", ",", "\<\"tell\"\>", 
+   ",", "\<\"o'er\"\>", ",", "\<\"The\"\>", ",", "\<\"sad\"\>", 
+   ",", "\<\"account\"\>", ",", "\<\"fore\"\>", ",", "\<\"bemoaned\"\>", 
+   ",", "\<\"Which\"\>", ",", "\<\"pay\"\>", ",", "\<\"as\"\>", 
+   ",", "\<\"if\"\>", ",", "\<\"not\"\>", ",", "\<\"paid\"\>", 
+   ",", "\<\"before\"\>", ",", "\<\"But\"\>", ",", "\<\"while\"\>", 
+   ",", "\<\"think\"\>", ",", "\<\"on\"\>", ",", "\<\"thee\"\>", 
+   ",", "\<\"friend\"\>", ",", "\<\"All\"\>", ",", "\<\"losses\"\>", 
+   ",", "\<\"are\"\>", ",", "\<\"restor'd\"\>", ",", "\<\"and\"\>", 
+   ",", "\<\"sorrows\"\>", ",", "\<\"end\"\>"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell["Then randomly select four of those words.", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"exampleTestList", "=", 
+  RowBox[{"RandomSample", "[", 
+   RowBox[{"exampleTestWords", ",", "4"}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\<\"before\"\>", ",", "\<\"afresh\"\>", ",", "\<\"precious\"\>", 
+   ",", "\<\"many\"\>"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell["\<\
+And then use our function to find the probability that a message with these \
+four words was written by Shakespeare: \
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pShakespeareGivenList", "[", "exampleTestList", "]"}]], "Input"],
+
+Cell[BoxData["0.5`"], "Output"]
+}, Open  ]],
+
+Cell["Putting this all together: ", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"pShakespeare", "[", 
+   RowBox[{"testMessage_String", ",", "testSize_Integer"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "testWordList", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"testWordList", "=", 
+      RowBox[{"RandomSample", "[", 
+       RowBox[{
+        RowBox[{"DeleteDuplicates", "[", 
+         RowBox[{"StringSplit", "[", 
+          RowBox[{"testMessage", ",", 
+           RowBox[{
+            RowBox[{"Except", "[", 
+             RowBox[{"WordCharacter", "|", "\"\<'\>\""}], "]"}], ".."}]}], 
+          "]"}], "]"}], ",", "testSize"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"pShakespeareGivenList", "[", "testWordList", "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+As an example, we'll run the filter on the second test message with a test \
+size of 3.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pShakespeare", "[", 
+  RowBox[{
+   RowBox[{"testPoems", "[", 
+    RowBox[{"[", "2", "]"}], "]"}], ",", "3"}], "]"}]], "Input"],
+
+Cell[BoxData["0.`"], "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["7.4 Expected Value and Variance", "Section",
+ CellTags->"Section4"],
+
+Cell[TextData[{
+ "In Section 7.2 of this manual, we introduced ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s functions for using random variables, random variates, and probability \
+distributions. In this section we will explore ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s abilities more closely and use probability distributions to explore the \
+concepts of expected value and variance."
+}], "Text"],
+
+Cell[TextData[{
+ "As mentioned earlier, ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " provides the distribution ",
+ StyleBox[ButtonBox["GeometricDistribution",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/GeometricDistribution"], "FunctionLink"],
+ ", which takes one parameter, the probability of a \
+\[OpenCurlyDoubleQuote]success.\[CloseCurlyDoubleQuote]"
+}], "Text"],
+
+Cell[TextData[{
+ "We can use the ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ " function to compute the probabilities of events. For example, the \
+probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"X", "=", "5"}], ")"}], TraditionalForm]]],
+ " is computed by the following."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[Equal]", "5"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", 
+     RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["243", "4096"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Note that the ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s definition of a geometric random variable differs slightly from the \
+textbook's. The textbook defines the value of the geometric random variable, \
+in terms of coin flips, to be the number of flips it takes to get a tails, \
+where the parameter is the probability of tails. ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s definition is that the value of the random variable is the number of \
+heads that appear before tails comes up. So the probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"p", "(", 
+    RowBox[{"X", "=", "k"}], ")"}], TraditionalForm]]],
+ " is"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Probability", "[", 
+  RowBox[{
+   RowBox[{"X", "\[Equal]", "k"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", 
+     RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\[Piecewise]", GridBox[{
+       {
+        RowBox[{
+         SuperscriptBox["3", "k"], " ", 
+         SuperscriptBox["4", 
+          RowBox[{
+           RowBox[{"-", "1"}], "-", "k"}]]}], 
+        RowBox[{"k", "\[GreaterEqual]", "0"}]},
+       {"0", 
+        TagBox["True",
+         "PiecewiseDefault",
+         AutoDelete->True]}
+      },
+      AllowedDimensions->{2, Automatic},
+      Editable->True,
+      GridBoxAlignment->{
+       "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+        "RowsIndexed" -> {}},
+      GridBoxItemSize->{
+       "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+        "RowsIndexed" -> {}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.84]}, 
+          Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}, "RowsIndexed" -> {}},
+      Selectable->True]}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxItemSize->{
+    "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[0.35]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  "Piecewise",
+  DeleteWithContents->True,
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output"]
+}, Open  ]],
+
+Cell["Contrast this with the formula given in the text.", "Text"],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " can also calculate the expected value, variance, and standard deviation of \
+distributions. The ",
+ StyleBox[ButtonBox["Mean",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Mean"], "FunctionLink"],
+ ", ",
+ StyleBox[ButtonBox["Variance",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Variance"], "FunctionLink"],
+ ", and ",
+ StyleBox[ButtonBox["StandardDeviation",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/StandardDeviation"], "FunctionLink"],
+ " functions all accept a distribution as the sole argument and return the \
+statistic."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Mean", "[", 
+  RowBox[{"GeometricDistribution", "[", 
+   RowBox[{"1", "/", "4"}], "]"}], "]"}]], "Input"],
+
+Cell[BoxData["3"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Variance", "[", 
+  RowBox[{"GeometricDistribution", "[", 
+   RowBox[{"1", "/", "4"}], "]"}], "]"}]], "Input"],
+
+Cell[BoxData["12"], "Output"]
+}, Open  ]],
+
+Cell["These functions can also compute symbolically:", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StandardDeviation", "[", 
+  RowBox[{"GeometricDistribution", "[", "k", "]"}], "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox[
+  SqrtBox[
+   RowBox[{"1", "-", "k"}]], "k"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "All three functions can also accept a list holding data. For example, to \
+compute the mean of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{"1", ",", "3", ",", "4", ",", "7", ",", "11"}], "}"}], 
+   TraditionalForm]]],
+ ":"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Mean", "[", 
+  RowBox[{"{", 
+   RowBox[{"1", ",", "3", ",", "4", ",", "7", ",", "11"}], "}"}], 
+  "]"}]], "Input"],
+
+Cell[BoxData[
+ FractionBox["26", "5"]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Alternately, you can use the ",
+ StyleBox[ButtonBox["Expectation",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Expectation"], "FunctionLink"],
+ " function. ",
+ StyleBox[ButtonBox["Expectation",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Expectation"], "FunctionLink"],
+ " is more flexible in that it allows you to form an expression using random \
+variables as a first argument and specify the distributions of the random \
+variables as the second argument. The syntax is similar to that of ",
+ StyleBox[ButtonBox["Probability",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Probability"], "FunctionLink"],
+ ", except the first argument is an expression, not an event."
+}], "Text"],
+
+Cell[TextData[{
+ "For example, the following will find the expected value of the geometric \
+distribution with parameter ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "/", "4"}], TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expectation", "[", 
+  RowBox[{"X", ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", 
+     RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["3"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ StyleBox[ButtonBox["Expectation",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Expectation"], "FunctionLink"],
+ " allows us to find the expected value of more complicated expressions, such \
+as ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"E", "(", 
+    RowBox[{"X", "^", "2"}], ")"}], TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expectation", "[", 
+  RowBox[{
+   RowBox[{"X", "^", "2"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", 
+     RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["21"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Recalling that the variance of a random variable is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"E", "(", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"X", "-", 
+       RowBox[{"E", "(", "X", ")"}]}], ")"}], "2"], ")"}], 
+   TraditionalForm]]],
+ ", we can use ",
+ StyleBox[ButtonBox["Expectation",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Expectation"], "FunctionLink"],
+ " to compute variance as well."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"mean", "=", 
+  RowBox[{"Expectation", "[", 
+   RowBox[{"X", ",", 
+    RowBox[{"X", "\[Distributed]", 
+     RowBox[{"GeometricDistribution", "[", 
+      RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData["3"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expectation", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"X", "-", "mean"}], ")"}], "^", "2"}], ",", 
+   RowBox[{"X", "\[Distributed]", 
+    RowBox[{"GeometricDistribution", "[", 
+     RowBox[{"1", "/", "4"}], "]"}]}]}], "]"}]], "Input"],
+
+Cell[BoxData["12"], "Output"]
+}, Open  ]],
+
+Cell["You can also mix distributions, as shown below.", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"distribution1", "=", 
+   RowBox[{"GeometricDistribution", "[", 
+    RowBox[{"1", "/", "4"}], "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"distribution2", "=", 
+   RowBox[{"BinomialDistribution", "[", 
+    RowBox[{"20", ",", ".3"}], "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"mean2", "=", 
+  RowBox[{"Expectation", "[", 
+   RowBox[{
+    RowBox[{"X", "+", 
+     RowBox[{"2", "*", "Y"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"X", "\[Distributed]", "distribution1"}], ",", 
+      RowBox[{"Y", "\[Distributed]", "distribution2"}]}], "}"}]}], 
+   "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData["15.`"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expectation", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"X", "+", 
+        RowBox[{"2", "*", "Y"}]}], ")"}], "-", "mean2"}], ")"}], "^", "2"}], 
+   ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"X", "\[Distributed]", "distribution1"}], ",", 
+     RowBox[{"Y", "\[Distributed]", "distribution2"}]}], "}"}]}], 
+  "]"}]], "Input"],
+
+Cell[BoxData["28.799999999999983`"], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Solutions to Computer Projects and Computations and Explorations\
+\>", "Section",
+ CellTags->"Solutions"],
+
+Cell[CellGroupData[{
+
+Cell["Computer Projects 7", "Subsection",
+ CellTags->"SolutionsCP7"],
+
+Cell[TextData[{
+ "Given a positive integer ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ ", simulate the collection of cards that come with the purchase of products \
+to find the number of products that must be purchased to obtain a full set of \
+",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ " different collector cards. (See Supplementary Exercise 33.)"
+}], "Problem"],
+
+Cell[TextData[{
+ StyleBox["Solution:",
+  FontSlant->"Italic"],
+ " We will define a function called ",
+ StyleBox["cardSimulate", "Input"],
+ " that will simulate the process of choosing random collectible cards until \
+all the possible cards have been obtained. This function needs to do three \
+things: (1) keep track of which cards have been obtained; (2) keep selecting \
+random cards until the complete set is obtained; and (3) keep track of how \
+many cards have been purchased."
+}], "Text"],
+
+Cell[TextData[{
+ "Think of the cards as numbered 1 through ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ ". To keep track of which cards have been obtained and which have not, we'll \
+use a list that we'll call ",
+ StyleBox["currCollection", "Input"],
+ ", for current collection. The entries in this list will be 0s and 1s, with \
+a 0 representing the fact that the card corresponding to that position is not \
+owned and 1 that it is. To initialize ",
+ StyleBox["currCollection", "Input"],
+ ", we use the ",
+ StyleBox[ButtonBox["ConstantArray",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/ConstantArray"], "FunctionLink"],
+ " function. For example, to produce a list of ten 0s, you would enter the \
+following."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ConstantArray", "[", 
+  RowBox[{"0", ",", "10"}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", 
+   ",", "0", ",", "0"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Second, random selection of integers can be accomplished with the ",
+ StyleBox[ButtonBox["RandomInteger",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomInteger"], "FunctionLink"],
+ " function. When given an argument of the form ",
+ Cell[BoxData[
+  RowBox[{"{", 
+   StyleBox["min", "CodeVar"], ",", 
+   StyleBox["max", "CodeVar"], "}"}]], "myCode"],
+ ", ",
+ StyleBox[ButtonBox["RandomInteger",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomInteger"], "FunctionLink"],
+ " returns an integer selected from that range. Our cards are numbered 1 \
+through ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ ", so we will use the range specification ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{"1", ",", "m"}], "}"}], TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RandomInteger", "[", 
+  RowBox[{"{", 
+   RowBox[{"1", ",", "10"}], "}"}], "]"}]], "Input"],
+
+Cell[BoxData["4"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Our function will generate a random card and set the entry in ",
+ StyleBox["currCollection", "Input"],
+ " at that card's position equal to 1. This needs to keep happening until all \
+the cards are owned. So we need to know when all of the entries of the list \
+are 1s. We can do this by adding up the entries in the list. Since the \
+entries are always 0 or 1, when the list is all 1s, the sum will be equal to ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ " and that's the only way the sum can be ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]]],
+ ". To add the entries in the list, we can use the ",
+ StyleBox[ButtonBox["Total",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Total"], "FunctionLink"],
+ " function as follows."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Total", "[", 
+  RowBox[{"{", 
+   RowBox[{"1", ",", "0", ",", "0", ",", "1", ",", "1", ",", "1"}], "}"}], 
+  "]"}]], "Input"],
+
+Cell[BoxData["4"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Third, we keep track of how many cards have been purchased with a counter \
+that we increment each time a random card is generated. \
+\>", "Text"],
+
+Cell["Putting all of these pieces together, here is the function:", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cardSimulate", "[", "m_Integer", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"currCollection", ",", "count", ",", "tempCard"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"currCollection", "=", 
+      RowBox[{"ConstantArray", "[", 
+       RowBox[{"0", ",", "m"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"count", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Total", "[", "currCollection", "]"}], "\[NotEqual]", "m"}], 
+       ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"tempCard", "=", 
+         RowBox[{"RandomInteger", "[", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", "m"}], "}"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"count", "++"}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"currCollection", "[", 
+          RowBox[{"[", "tempCard", "]"}], "]"}], "=", "1"}]}]}], 
+      "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", "count"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[TextData[{
+ "Let's run the simulation 10000 times for ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"m", "=", "5"}], TraditionalForm]]],
+ " and draw a graph of the resulting data:"
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"simulations", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"cardSimulate", "[", "5", "]"}], ",", 
+     RowBox[{"{", "10000", "}"}]}], "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Histogram", "[", "simulations", "]"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ GraphicsBox[
+  {RGBColor[0.798413061722744, 0.824719615472648, 0.968322270542458], 
+   EdgeForm[Opacity[0.413]], {}, 
+   {RGBColor[0.798413061722744, 0.824719615472648, 0.968322270542458], 
+    EdgeForm[Opacity[0.413]], RectangleBox[{5., 0}, {6., 377},
+     RoundingRadius->0], RectangleBox[{6., 0}, {7., 786},
+     RoundingRadius->0], RectangleBox[{7., 0}, {8., 990},
+     RoundingRadius->0], RectangleBox[{8., 0}, {9., 1071},
+     RoundingRadius->0], RectangleBox[{9., 0}, {10., 1021},
+     RoundingRadius->0], RectangleBox[{10., 0}, {11., 942},
+     RoundingRadius->0], RectangleBox[{11., 0}, {12., 851},
+     RoundingRadius->0], RectangleBox[{12., 0}, {13., 734},
+     RoundingRadius->0], RectangleBox[{13., 0}, {14., 606},
+     RoundingRadius->0], RectangleBox[{14., 0}, {15., 476},
+     RoundingRadius->0], RectangleBox[{15., 0}, {16., 411},
+     RoundingRadius->0], RectangleBox[{16., 0}, {17., 319},
+     RoundingRadius->0], RectangleBox[{17., 0}, {18., 287},
+     RoundingRadius->0], RectangleBox[{18., 0}, {19., 191},
+     RoundingRadius->0], RectangleBox[{19., 0}, {20., 190},
+     RoundingRadius->0], RectangleBox[{20., 0}, {21., 145},
+     RoundingRadius->0], RectangleBox[{21., 0}, {22., 123},
+     RoundingRadius->0], RectangleBox[{22., 0}, {23., 92},
+     RoundingRadius->0], RectangleBox[{23., 0}, {24., 84},
+     RoundingRadius->0], RectangleBox[{24., 0}, {25., 62},
+     RoundingRadius->0], RectangleBox[{25., 0}, {26., 53},
+     RoundingRadius->0], RectangleBox[{26., 0}, {27., 39},
+     RoundingRadius->0], RectangleBox[{27., 0}, {28., 25},
+     RoundingRadius->0], RectangleBox[{28., 0}, {29., 23},
+     RoundingRadius->0], RectangleBox[{29., 0}, {30., 13},
+     RoundingRadius->0], RectangleBox[{30., 0}, {31., 20},
+     RoundingRadius->0], RectangleBox[{31., 0}, {32., 18},
+     RoundingRadius->0], RectangleBox[{32., 0}, {33., 10},
+     RoundingRadius->0], RectangleBox[{33., 0}, {34., 9},
+     RoundingRadius->0], RectangleBox[{34., 0}, {35., 7},
+     RoundingRadius->0], RectangleBox[{35., 0}, {36., 9},
+     RoundingRadius->0], RectangleBox[{36., 0}, {37., 2},
+     RoundingRadius->0], RectangleBox[{37., 0},
+     RoundingRadius->0], RectangleBox[{38., 0}, {39., 4},
+     RoundingRadius->0], RectangleBox[{39., 0},
+     RoundingRadius->0], RectangleBox[{41., 0}, {42., 3},
+     RoundingRadius->0], RectangleBox[{42., 0},
+     RoundingRadius->0], RectangleBox[{43., 0},
+     RoundingRadius->0], RectangleBox[{44., 0},
+     RoundingRadius->0], RectangleBox[{51., 0},
+     RoundingRadius->0], RectangleBox[{53., 0},
+     RoundingRadius->0]}, {}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{5., 0},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  PlotRange->{{5., 54.}, {All, All}},
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.1]}},
+  Ticks->{Automatic, Automatic}]], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Computer Projects 9", "Subsection",
+ CellTags->"SolutionsCP9"],
+
+Cell[TextData[{
+ "Given a positive integer ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ ", find the probability of selecting the six integers from the set ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2", ",", "\[Ellipsis]", ",", "n"}], "}"}], 
+   TraditionalForm]]],
+ " that were mechanically selected in a lottery."
+}], "Problem"],
+
+Cell[TextData[{
+ StyleBox["Solution:",
+  FontSlant->"Italic"],
+ " We will follow example 4 from Section 7.1 of the text. The total number of \
+ways of choosing 6 numbers from ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " numbers is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"C", "(", 
+    RowBox[{"n", ",", "6"}], ")"}], TraditionalForm]]],
+ ", which is found with the function ",
+ StyleBox[ButtonBox["Binomial",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Binomial"], "FunctionLink"],
+ ". This gives us the total number of possibilities, only one of which will \
+win. The following defines this function and applies it to the situation in \
+which ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "=", "49"}], TraditionalForm]]],
+ "."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"lottery", "[", "n_Integer", "]"}], ":=", 
+  RowBox[{"1.", "/", 
+   RowBox[{"Binomial", "[", 
+    RowBox[{"n", ",", "6"}], "]"}]}]}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"lottery", "[", "49", "]"}]], "Input"],
+
+Cell[BoxData["7.151123842018516`*^-8"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+If the rules of the lottery change, so that the number of numbers chosen is \
+something other than 6, then we must modify the function above. We can easily \
+modify our program to allow us to specify how many numbers we want to choose, \
+by adding another parameter.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"lottery2", "[", 
+   RowBox[{"n_Integer", ",", "k_Integer"}], "]"}], ":=", 
+  RowBox[{"1.", "/", 
+   RowBox[{"Binomial", "[", 
+    RowBox[{"n", ",", "k"}], "]"}]}]}]], "Input",
+ InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"lottery2", "[", 
+  RowBox[{"49", ",", "6"}], "]"}]], "Input"],
+
+Cell[BoxData["7.151123842018516`*^-8"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"lottery2", "[", 
+  RowBox[{"30", ",", "3"}], "]"}]], "Input"],
+
+Cell[BoxData["0.0002463054187192118`"], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Computations and Explorations 3", "Subsection",
+ CellTags->"SolutionsCE3"],
+
+Cell["\<\
+Estimate the probability that two integers selected at random are relatively \
+prime by testing a large number of randomly selected pairs of integers. Look \
+up the theorem that gives this probability and compare your results with the \
+correct probability. \
+\>", "Problem"],
+
+Cell[TextData[{
+ StyleBox["Solution:",
+  FontSlant->"Italic"],
+ " To solve this problem, three things must be done:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Devise a method for generating pairs of random integers. ", \
+"Item1Numbered"],
+
+Cell["\<\
+Produce a large number of these pairs, test whether they are relatively \
+prime, and note the probability estimate based on this sample. \
+\>", "Item1Numbered"],
+
+Cell["Look up the theorem mentioned in the question.", "Item1Numbered"]
+}, Open  ]],
+
+Cell["Naturally, we'll leave part 3 entirely to the reader.", "Text"],
+
+Cell[TextData[{
+ "The ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " function ",
+ StyleBox[ButtonBox["RandomInteger",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/RandomInteger"], "FunctionLink"],
+ " can be used to generate a the random integers. The optional second \
+argument can be used to specify a number of integers to generate. For \
+example, the following generates 10 random integers between 0 and 100."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RandomInteger", "[", 
+  RowBox[{"100", ",", "10"}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "61", ",", "61", ",", "49", ",", "60", ",", "42", ",", "20", ",", "77", ",",
+    "2", ",", "83", ",", "81"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The second argument can also specify that a nested list should be \
+generated. For example, to generate ten pairs of integers, you use ",
+ StyleBox["{10,2}", "Input"],
+ " as the second argument."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RandomInteger", "[", 
+  RowBox[{"100", ",", 
+   RowBox[{"{", 
+    RowBox[{"10", ",", "2"}], "}"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"70", ",", "45"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "76"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"23", ",", "51"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"42", ",", "71"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"99", ",", "99"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"19", ",", "100"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"45", ",", "8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"23", ",", "68"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"29", ",", "8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"7", ",", "82"}], "}"}]}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Having generated such a list we can test whether the pairs of its members \
+are relatively prime using the ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " function ",
+ StyleBox[ButtonBox["CoprimeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/CoprimeQ"], "FunctionLink"],
+ ". We can evaluate ",
+ StyleBox[ButtonBox["CoprimeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/CoprimeQ"], "FunctionLink"],
+ " on each pair by using ",
+ StyleBox[ButtonBox["Apply",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Apply"], "FunctionLink"],
+ " (",
+ StyleBox["@@", "Input"],
+ ") at level 1. Ordinarily,",
+ " ",
+ StyleBox[ButtonBox["Apply",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Apply"], "FunctionLink"],
+ " replaces the head of an expression with the function being applied. In \
+this case, we want to apply the function ",
+ StyleBox[ButtonBox["CoprimeQ",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/CoprimeQ"], "FunctionLink"],
+ " not to the entire expression, but \[OpenCurlyDoubleQuote]one level down\
+\[CloseCurlyDoubleQuote] at each subexpression. For this, we can give the \
+level specification {1} as a third argument in the ",
+ StyleBox[ButtonBox["Apply",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Apply"], "FunctionLink"],
+ " function."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Apply", "[", 
+  RowBox[{"CoprimeQ", ",", 
+   RowBox[{"RandomInteger", "[", 
+    RowBox[{"100", ",", 
+     RowBox[{"{", 
+      RowBox[{"10", ",", "2"}], "}"}]}], "]"}], ",", 
+   RowBox[{"{", "1", "}"}]}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "False", ",", "True", ",", "False", ",", "True", ",", "False", ",", "False",
+    ",", "False", ",", "True", ",", "False", ",", "False"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Alternately, you can use the ",
+ StyleBox["@@@", "Input"],
+ " operator."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"CoprimeQ", "@@@", 
+  RowBox[{"RandomInteger", "[", 
+   RowBox[{"100", ",", 
+    RowBox[{"{", 
+     RowBox[{"10", ",", "2"}], "}"}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "False", ",", "True", ",", "True", ",", "True", ",", "False", ",", "False", 
+   ",", "False", ",", "True", ",", "True", ",", "False"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Now we just need to count the number that are relatively prime. For this, \
+we use the ",
+ StyleBox[ButtonBox["Count",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/Count"], "FunctionLink"],
+ " function with second argument ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ " to count the number of times that ",
+ StyleBox[ButtonBox["True",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/True"], "FunctionLink"],
+ " appears in the list."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Count", "[", 
+  RowBox[{
+   RowBox[{"CoprimeQ", "@@@", 
+    RowBox[{"RandomInteger", "[", 
+     RowBox[{"100", ",", 
+      RowBox[{"{", 
+       RowBox[{"10", ",", "2"}], "}"}]}], "]"}]}], ",", "True"}], 
+  "]"}]], "Input"],
+
+Cell[BoxData["7"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Increase the maximum integer and the number of pairs generated and divide by \
+the number of pairs to get an estimate of the probability.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Count", "[", 
+   RowBox[{
+    RowBox[{"CoprimeQ", "@@@", 
+     RowBox[{"RandomInteger", "[", 
+      RowBox[{
+       RowBox[{"10", "^", "50"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"100", ",", "2"}], "}"}]}], "]"}]}], ",", "True"}], "]"}], 
+  "/", "100."}]], "Input"],
+
+Cell[BoxData["0.54`"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+Repeating the computation may lead to a somewhat different result since the \
+integers were generated randomly. You should try this with a larger sample \
+size, say 10000 pairs of integers. \
+\>", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Computations and Explorations 4", "Subsection",
+ CellTags->"SolutionsCE4"],
+
+Cell["\<\
+Determine the number of people needed to ensure that the probability at least \
+two of them have the same day of the year as their birthday is at least 70%, \
+at least 80%, at least 90%, at least 95%, at least 98%, and at least 99%.\
+\>", "Problem"],
+
+Cell[TextData[{
+ StyleBox["Solution:",
+  FontSlant->"Italic"],
+ " Given that we know the formula for the probability of two people having \
+the same birthday, we can use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to loop over a range of possible numbers of people until we reach a \
+probability greater than the desired probability. Example 13 of section 7.2 \
+of the text shows that the probability that ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " people in a room have different birthdays is"
+}], "Text"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   SubscriptBox["p", "n"], "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      FractionBox["365", "366"], "\[CenterDot]", 
+      FractionBox["364", "366"], "\[CenterDot]", 
+      FractionBox["363", "366"]}], "\[CenterEllipsis]", " ", 
+     FractionBox[
+      RowBox[{"367", "-", "n"}], "366"]}], "=", 
+    FractionBox[
+     RowBox[{"P", "(", 
+      RowBox[{"366", ",", "n"}], ")"}], 
+     SuperscriptBox["366", "n"]]}]}], TraditionalForm]], "Equation"],
+
+Cell[TextData[{
+ "Our task is to find ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " such that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "-", 
+    SubscriptBox["p", "n"]}], TraditionalForm]]],
+ " is greater than the values specified in the problem. We can do this using \
+the ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " function below."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"birthdays", "[", "percentage_Real", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"numPeople", "=", "0"}], ",", 
+      RowBox[{"curProb", "=", "0"}]}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{"curProb", "<", "percentage"}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"numPeople", "++"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"curProb", "=", 
+         RowBox[{"1", "-", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"366", "!"}], "/", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"366", "-", "numPeople"}], ")"}], "!"}]}], ")"}], "/", 
+           
+           RowBox[{"366", "^", "numPeople"}]}]}]}]}]}], "\[IndentingNewLine]",
+       "]"}], ";", "\[IndentingNewLine]", "numPeople"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["\<\
+This function returns the number of people required to attain the given \
+probability that two have the same birthday. We execute the function for \
+probabilities of .70 and .95.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"birthdays", "[", ".70", "]"}]], "Input"],
+
+Cell[BoxData["30"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"birthdays", "[", ".95", "]"}]], "Input"],
+
+Cell[BoxData["47"], "Output"]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Exercises", "Section",
+ CellTags->"Exercises"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to determine the integer ",
+ Cell[BoxData[
+  FormBox["k", TraditionalForm]]],
+ " such that the chances of picking six numbers correctly in a lottery from \
+the first ",
+ Cell[BoxData[
+  FormBox["k", TraditionalForm]]],
+ " positive integers is less than"
+}], "Item1Exercise"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "1 in 100 million (",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"-", "8"}]], TraditionalForm]]],
+ "),"
+}], "Item2Exercise"],
+
+Cell[TextData[{
+ "1 in a billion (",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"-", "9"}]], TraditionalForm]]],
+ "),"
+}], "Item2Exercise"],
+
+Cell[TextData[{
+ "1 in 10 billion (",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"-", "10"}]], TraditionalForm]]],
+ "),"
+}], "Item2Exercise"],
+
+Cell[TextData[{
+ "1 in 100 billion (",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"-", "11"}]], TraditionalForm]]],
+ "), and"
+}], "Item2Exercise"],
+
+Cell[TextData[{
+ "1 in a trillion (",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"-", "12"}]], TraditionalForm]]],
+ ")."
+}], "Item2Exercise"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Implement a Monte Carlo algorithm that determines whether a permutation of \
+the integers 1 through ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]]],
+ " is in increasing order or not. (See Exercise 40 in section 7.2 of the \
+textbook.)"
+}], "Item1Exercise"],
+
+Cell[TextData[{
+ "Modify the implementation of the collector card simulator given in the \
+solution to Computer Projects 7 to model the situation in which the cards do \
+not appear with equal probabilities. For instance, there could be five \
+possible cards all of which appear with probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"2", "/", "9"}], TraditionalForm]]],
+ " except for card number 5 which appears with probability ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"1", "/", "9"}], TraditionalForm]]],
+ "."
+}], "Item1Exercise"],
+
+Cell["\<\
+Modify the implementation of the collector card simulator given in the \
+solution to Computer Projects 7 to model the situation in which cards are \
+purchased in packs. For example, there could be ten possible cards and they \
+are purchased three to a pack. Assume the cards in a pack are always \
+different from each other. The function should return the number of packs \
+necessary to collect all of the cards.\
+\>", "Item1Exercise"],
+
+Cell[TextData[{
+ "Compute the average of the probabilities returned by running the Bayesian \
+filter ",
+ StyleBox["pShakespeare", "Input"],
+ " 100 times with the ",
+ StyleBox["testMessage", "Input"],
+ " argument equal to ",
+ StyleBox["testPoems[[10]]", "Input"],
+ " and a ",
+ StyleBox["testSize", "Input"],
+ " of 1, i.e., on the tenth of the test poems and using one word. Repeat this \
+with a ",
+ StyleBox["testSize", "Input"],
+ " of 2, 3, ..., 10. Graph the average probabilities for the different \
+numbers of test words. Is there a trend in the average probabilities as the \
+number of words increases? Explain why."
+}], "Item1Exercise"],
+
+Cell[TextData[{
+ "The textbook describes how a Bayesian filter can be improved by considering \
+pairs of words. Implement a Bayesian spam filter that uses this idea. Using \
+the Shakespearean and Elizabethan sonnets as messages, compare the accuracy \
+of your filter with ",
+ StyleBox["pShakespeare", "Input"],
+ "."
+}], "Item1Exercise"],
+
+Cell[TextData[{
+ "As described in the textbook, spam filters are most effective when the \
+words being used as the basis of comparison are not chosen randomly, as they \
+are in the implementation of ",
+ StyleBox["pShakespeare", "Input"],
+ " above, but instead are chosen more carefully. Specifically, choosing words \
+which have very high or very low probability of appearing in spam messages \
+can improve the performance of the filter. Implement a Bayesian spam filter \
+that uses this idea. Using the Shakespearean and Elizabethan sonnets as \
+messages, compare the accuracy of your filter with ",
+ StyleBox["pShakespeare", "Input"],
+ "."
+}], "Item1Exercise"]
+}, Open  ]]
+}, Closed]]
+}, Open  ]]
+},
+WindowSize->{725, 850},
+WindowMargins->{{4, Automatic}, {Automatic, 4}},
+DockedCells->Cell[
+  BoxData[
+   TagBox[
+    GridBox[{{"\"Exploring Discrete Mathematics with Mathematica\"", 
+       ActionMenuBox[
+       "\"Navigation\"", {
+        "\"CloseAll\"" :> Module[{$CellContext`DJSection$}, SelectionMove[
+             SelectedNotebook[], All, Notebook]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; 
+           Do[NotebookLocate[$CellContext`DJSection$]; FrontEndExecute[
+               FrontEndToken["OpenCloseGroup"]], {$CellContext`DJSection$, {
+              "Section2a", "Section2b", "SolutionsCE3", "SolutionsCE4", 
+               "SolutionsCP7", "SolutionsCP9", "Section1", "Section2", 
+               "Section3", "Section4", "Solutions", "Exercises"}}]; 
+           SelectionMove[
+             SelectedNotebook[], Before, Notebook]], "\"Section1\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Section1"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Section2\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Section2"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Section3\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Section3"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Section4\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Section4"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Solutions\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Solutions"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Exercises\"" :> 
+         Module[{}, Do[NotebookLocate[$CellContext`DJSection]; FrontEndExecute[
+                FrontEndToken[
+                "SelectionCloseAllGroups"]], {$CellContext`DJSection, {
+               "Section1", "Section2", "Section3", "Section4", "Solutions", 
+                "Exercises"}}] NotebookLocate["Exercises"]; FrontEndExecute[
+             FrontEndToken["SelectionCloseAllGroups"]]; FrontEndExecute[
+             FrontEndToken["SelectionOpenAllGroups"]]; SelectionMove[
+             SelectedNotebook[], Before, Cell]], "\"Open All\"" :> 
+         Module[{$CellContext`DJSection$}, 
+           Do[NotebookLocate[$CellContext`DJSection$]; FrontEndExecute[
+               FrontEndToken[
+               "SelectionOpenAllGroups"]], {$CellContext`DJSection$, {
+              "Exercises", "Section1", "Section2", "Section2a", "Section2b", 
+               "Section3", "Section4", "Solutions", "SolutionsCE3", 
+               "SolutionsCE4", "SolutionsCP7", "SolutionsCP9"}}] SelectionMove[
+             SelectedNotebook[], Before, Notebook]]}]}}, 
+     GridBoxAlignment -> {
+      "Columns" -> {Left, Baseline}, "Rows" -> {Right, Baseline}}, AutoDelete -> 
+     False, GridBoxItemSize -> {"Columns" -> {
+         Scaled[0.8], 
+         Scaled[0.2]}}], "Grid"]], "DockedCell", FontFamily -> "Times"],
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+Magnification->1,
+FrontEndVersion->"9.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 25, \
+2013)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[
+    StyleDefinitions -> 
+     FrontEnd`FileName[{"Book"}, "Textbook.nb", CharacterEncoding -> 
+       "UTF-8"]]], 
+   Cell[
+    StyleData[All, "Printout"], PageWidth -> PaperWidth, 
+    CellHorizontalScrolling -> True, 
+    CellLabelMargins -> {{2, Inherited}, {Inherited, Inherited}}, 
+    ShowAutoStyles -> False, 
+    AutoStyleOptions -> {"HighlightMisspelledWords" -> False}, ScriptMinSize -> 
+    9, MenuSortingValue -> 1500, 
+    PrivateFontOptions -> {"FontType" -> "Outline"}, Magnification -> 1], 
+   Cell[
+    StyleData["Title"], Editable -> False, ShowCellBracket -> Automatic, 
+    CellGroupingRules -> {"TitleGrouping", 0}, PageBreakBelow -> False, 
+    DefaultNewInlineCellStyle -> {}, LanguageCategory -> "NaturalLanguage", 
+    FontFamily -> "Helvetica", FontSize -> 25, FontWeight -> "Bold", 
+    FontColor -> GrayLevel[0.137255]], 
+   Cell[
+    StyleData["BookChapterTitle", StyleDefinitions -> StyleData["Title"]], 
+    CellFrame -> {{0, 0}, {1, 1}}, CellDingbat -> Cell[
+      BoxData[
+       GraphicsBox[{{
+          RGBColor[0.09375, 0.570313, 0.816406], 
+          RectangleBox[{0, 0}]}, {
+          GrayLevel[1], FontSize -> 35, FontWeight -> Bold, FontFamily -> 
+          "Helvetica", 
+          InsetBox[
+           CounterBox["ChapterNumber"], {0.5, 0.45}, {Center, Center}]}}, 
+        ImageSize -> {70, 70}]], "Output"], CellMargins -> {{75, 0}, {20, 5}},
+     CellFrameColor -> GrayLevel[1]], 
+   Cell[
+    StyleData["DockedCell"], CellMargins -> {{0, 12}, {0, 0}}, 
+    CellGroupingRules -> "TitleGrouping", 
+    ConversionRules :> {"TeX" -> {"\n\\chapter{", "}"}}, 
+    TaggingRules :> {"CounterSettings" -> {"CounterTarget" -> "CellGroup"}}, 
+    PageBreakAbove -> False, PageBreakBelow -> False, LineSpacing -> {1, 2}, 
+    MenuSortingValue -> 1105, FontFamily -> "Helvetica", FontSize -> 20, 
+    FontWeight -> "Bold", Background -> 
+    RGBColor[0.09375, 0.570313, 0.816406]], 
+   Cell[
+    StyleData["FunctionLink"], ConversionRules :> {"TeX" -> {{"", 
+         $CellContext`ExportAsHyperRef[], ""}, {"", Automatic, ""}}}, 
+    MenuSortingValue -> 1105, ButtonStyleMenuListing -> None, FontFamily -> 
+    "Courier", FontVariations -> {"Underline" -> True}, FontColor -> 
+    RGBColor[0, 0, 1], 
+    ButtonBoxOptions -> {Active -> True, ButtonFunction :> (FrontEndExecute[{
+         FrontEnd`NotebookLocate[#2]}]& ), ButtonNote -> ButtonData}], 
+   Cell[
+    StyleData["Problem"], CellMargins -> {{40, 12}, {15, 15}}, 
+    CellGroupingRules -> {"GroupTogetherNestedGrouping", 15010}, 
+    ConversionRules :> {
+     "TeX" -> {{"", Automatic, ""}, {"\n\n", Automatic, ""}}}, 
+    TaggingRules :> {
+     "ExtraConversionRules" -> {"General" -> {"RestartList" -> False}}}], 
+   Cell[
+    CellGroupData[{
+      Cell[
+       StyleData["Item1Exercise"], CellDingbat -> Cell[
+         TextData[{
+           CounterBox["Item1Exercise"], "."}], CellSize -> {30, Inherited}, 
+         TextAlignment -> Right, FontWeight -> "Bold"], 
+       CellMargins -> {{50, 12}, {3, 5}}, 
+       CellGroupingRules -> {"GroupTogetherNestedGrouping", 17000}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6, CounterIncrements -> "Item1Exercise", 
+       CounterAssignments -> {{"Item2Exercise", 0}}, MenuSortingValue -> 
+       4100], 
+      Cell[
+       StyleData["Item1Exercise", "Printout"], CellDingbat -> Cell[
+         TextData[{
+           CounterBox["Item1Exercise"], "."}], CellSize -> {20, Inherited}, 
+         TextAlignment -> Right, FontWeight -> "Bold"], 
+       CellMargins -> {{35, 12}, {3, 5}}, 
+       CellGroupingRules -> {"GroupTogetherNestedGrouping", 17000}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6]}, Open]], 
+   Cell[
+    CellGroupData[{
+      Cell[
+       StyleData["ExerciseContinuation"], CellMargins -> {{50, 12}, {1, 3}}, 
+       CellGroupingRules -> {"GroupTogetherNestedGrouping", 17000}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6, MenuSortingValue -> 4101], 
+      Cell[
+       StyleData["ExerciseContinuation", "Printout"], 
+       CellMargins -> {{35, 12}, {1, 3}}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6]}, Open]], 
+   Cell[
+    CellGroupData[{
+      Cell[
+       StyleData["Item2Exercise"], CellDingbat -> Cell[
+         TextData[{
+           CounterBox["Item2Exercise"], "."}], CellSize -> {32, Inherited}, 
+         TextAlignment -> Right, FontWeight -> "Bold"], 
+       CellMargins -> {{75, 12}, {1, 2}}, 
+       CellGroupingRules -> {"GroupTogetherNestedGrouping", 17100}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6, CounterIncrements -> "Item2Exercise", MenuSortingValue -> 4200, 
+       CounterBoxOptions -> {CounterFunction :> (Part[
+           CharacterRange["a", "z"], #]& )}], 
+      Cell[
+       StyleData["Item2Exercise", "Printout"], CellDingbat -> Cell[
+         TextData[{
+           CounterBox["Item2Exercise"], "."}], CellSize -> {20, Inherited}, 
+         TextAlignment -> Right, FontWeight -> "Bold"], 
+       CellMargins -> {{50, 12}, {1, 2}}, 
+       CellFrameLabels -> {{None, None}, {None, None}}, CellFrameLabelMargins -> 
+       6, CounterBoxOptions -> {CounterFunction :> (Part[
+           CharacterRange["a", "z"], #]& )}]}, Open]], 
+   Cell[
+    StyleData["ExerciseEquation"], CellMargins -> {{36, 12}, {7, 7}}, 
+    CellGroupingRules -> {"GroupTogetherNestedGrouping", 17200}, 
+    CellHorizontalScrolling -> True, 
+    CellFrameLabels -> {{None, None}, {None, None}}, DefaultFormatType -> 
+    TraditionalForm, InputAutoReplacements -> {}, TextAlignment -> Center, 
+    MenuSortingValue -> 4300, 
+    ButtonBoxOptions -> {Appearance -> {Automatic, None}}], 
+   Cell[
+    StyleData["myCode"], CellMargins -> {{66, 10}, {5, 10}}, 
+    StyleKeyMapping -> {"=" -> "WolframAlphaShort"}, Evaluatable -> False, 
+    CellGroupingRules -> "InputGrouping", TextClipboardType -> "InputText", 
+    PageBreakWithin -> False, GroupPageBreakWithin -> False, 
+    DefaultFormatType -> DefaultInputFormatType, ContextMenu -> 
+    FEPrivate`FrontEndResource["ContextMenus", "myCode"], ShowAutoStyles -> 
+    True, "TwoByteSyntaxCharacterAutoReplacement" -> True, 
+    HyphenationOptions -> {"HyphenationCharacter" -> "\[Continuation]"}, 
+    AutoItalicWords -> {}, LanguageCategory -> "Mathematica", FormatType -> 
+    InputForm, NumberMarks -> True, 
+    LinebreakAdjustments -> {0.85, 2, 10, 0, 1}, CounterIncrements -> "Code", 
+    MenuSortingValue -> 1495, MenuCommandKey -> "8", FontWeight -> 
+    "Bold", $CellContext`StripStyleOnPaste -> 
+    True, $CellContext`AutoQuoteCharacters -> {}, \
+$CellContext`PasteAutoQuoteCharacters -> {}], 
+   Cell[
+    StyleData["CodeVar"], DefaultFormatType -> DefaultInputFormatType, 
+    LineBreakWithin -> False, MenuSortingValue -> 10000, FontWeight -> "Bold",
+     FontSlant -> "Italic", FontColor -> GrayLevel[0.4]], 
+   Cell[
+    CellGroupData[{
+      Cell[
+       StyleData["Section"], CellFrame -> {{6, 0}, {0, 1}}, ShowCellBracket -> 
+       Automatic, CellMargins -> {{12, 12}, {3, 24}}, 
+       CellGroupingRules -> {"SectionGrouping", 30}, 
+       ConversionRules :> {
+        "TeX" -> {"\n\\section{", "}"}, 
+         "HTML" -> {"<h3 class=\"Section\">", "</h3>"}}, 
+       TaggingRules :> {
+        "CounterSettings" -> {
+          "CounterFormat" -> {"BookChapterNumber", ".", "Section"}, 
+           "CounterTarget" -> "Cell", "XRefPrefix" -> "Section"}}, 
+       PageBreakBelow -> False, CellFrameMargins -> {{8, 8}, {4, 6}}, 
+       CellFrameColor -> RGBColor[0.09375, 0.570313, 0.816406], TabSpacings -> 
+       2.1, CounterIncrements -> {
+        "Section", "SectionHeader", "SubsectionHeader", "SubsubsectionHeader",
+          "SubsubsubsectionHeader"}, FontFamily -> "Helvetica", FontSize -> 
+       16, FontWeight -> "Bold", Background -> GrayLevel[0.999985]], 
+      Cell[
+       StyleData["Section", "Printout"], CellFrame -> {{4, 0}, {0, 0.5}}, 
+       CellMargins -> {{2, 2}, {3, 21}}, PageBreakBelow -> False, 
+       CellFrameMargins -> {{6, 6}, {3, 5}}, CellFrameColor -> 
+       RGBColor[0.09375, 0.570313, 0.816406]], 
+      Cell[
+       StyleData["Section", "DoubleSpacedPrintout"], 
+       CellFrame -> {{4, 0}, {0, 0.5}}, CellMargins -> {{2, 2}, {3, 21}}, 
+       PageBreakBelow -> False, CellFrameMargins -> {{6, 6}, {3, 5}}, 
+       CellFrameColor -> RGBColor[0.09375, 0.570313, 0.816406], FontSize -> 
+       14]}, Open]], 
+   Cell[
+    CellGroupData[{
+      Cell[
+       StyleData["Subsubsection"], CellDingbat -> None, 
+       CellMargins -> {{12, 12}, {0, 6}}, 
+       CellElementSpacings -> {"ClosedGroupTopMargin" -> 12}, 
+       CellGroupingRules -> {"SectionGrouping", 50}, 
+       ConversionRules :> {
+        "TeX" -> {"\n\\subsubsection{", "}"}, 
+         "HTML" -> {"<h5 class=\"Subsubsection\">", "</h5>"}}, PageBreakBelow -> 
+       False, CellFrameLabelMargins -> 4, 
+       CounterIncrements -> {
+        "Subsubsection", "SubsubsectionHeader", "SubsubsubsectionHeader"}, 
+       FontFamily -> "Helvetica", FontSize -> 11, FontWeight -> "Bold", 
+       FontSlant -> "Italic"], 
+      Cell[
+       StyleData["Subsubsection", "Printout"], PageBreakBelow -> False, 
+       FontFamily -> "Helvetica", FontSize -> 11, FontWeight -> "Bold", 
+       FontSlant -> "Italic"]}, Open]], 
+   Cell[
+    StyleData["Equation"], CellMargins -> {{26, 10}, {7, 7}}, 
+    ConversionRules :> {
+     "HTML" -> {{"", ""}, {"<p class=\"Equation\">", "</p>"}}}, 
+    CellHorizontalScrolling -> True, DefaultFormatType -> TraditionalForm, 
+    InputAutoReplacements -> {}, TextAlignment -> Center, CounterIncrements -> 
+    "Equation", ButtonBoxOptions -> {Appearance -> {Automatic, None}}], 
+   Cell[
+    StyleData["Subsubsubsection"], CellDingbat -> None, 
+    CellMargins -> {{12, 12}, {0, 6}}, 
+    CellGroupingRules -> {"SectionGrouping", 60}, 
+    ConversionRules :> {
+     "TeX" -> {"\n\\subsubsubsection{", "}"}, 
+      "HTML" -> {"<h6 class=\"Subsubsubsection\">", "</h6>"}}, PageBreakBelow -> 
+    False, CellFrameLabelMargins -> 4, 
+    CounterIncrements -> {"Subsubsubsection", "SubsubsubsectionHeader"}, 
+    FontFamily -> "Helvetica", FontSize -> 11, FontSlant -> "Italic"]}, 
+  Visible -> False, FrontEndVersion -> 
+  "9.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 25, 2013)", 
+  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "Section1"->{
+  Cell[2687, 73, 85, 1, 55, "Section",
+   CellTags->"Section1"]},
+ "Section2"->{
+  Cell[9354, 304, 64, 1, 35, "Section",
+   CellTags->"Section2"]},
+ "Section2a"->{
+  Cell[10195, 336, 71, 1, 32, "Subsection",
+   CellTags->"Section2a"]},
+ "Section2b"->{
+  Cell[52119, 1632, 90, 2, 26, "Subsection",
+   PageBreakWithin->False,
+   CellTags->"Section2b"]},
+ "Section3"->{
+  Cell[64874, 2054, 77, 1, 35, "Section",
+   CellTags->"Section3"]},
+ "Section4"->{
+  Cell[107608, 3308, 73, 1, 35, "Section",
+   CellTags->"Section4"]},
+ "Solutions"->{
+  Cell[118034, 3692, 115, 3, 35, "Section",
+   CellTags->"Solutions"]},
+ "SolutionsCP7"->{
+  Cell[118174, 3699, 68, 1, 32, "Subsection",
+   CellTags->"SolutionsCP7"]},
+ "SolutionsCP9"->{
+  Cell[127148, 3951, 68, 1, 26, "Subsection",
+   CellTags->"SolutionsCP9"]},
+ "SolutionsCE3"->{
+  Cell[129614, 4045, 80, 1, 26, "Subsection",
+   CellTags->"SolutionsCE3"]},
+ "SolutionsCE4"->{
+  Cell[136289, 4283, 80, 1, 26, "Subsection",
+   CellTags->"SolutionsCE4"]},
+ "Exercises"->{
+  Cell[139557, 4396, 52, 1, 35, "Section",
+   CellTags->"Exercises"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"Section1", 159484, 4840},
+ {"Section2", 159565, 4843},
+ {"Section2a", 159648, 4846},
+ {"Section2b", 159736, 4849},
+ {"Section3", 159851, 4853},
+ {"Section4", 159935, 4856},
+ {"Solutions", 160021, 4859},
+ {"SolutionsCP7", 160112, 4862},
+ {"SolutionsCP9", 160208, 4865},
+ {"SolutionsCE3", 160304, 4868},
+ {"SolutionsCE4", 160400, 4871},
+ {"Exercises", 160493, 4874}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 93, 1, 96, "BookChapterTitle",
+ CounterAssignments->{{"ChapterNumber", 7}}],
+Cell[CellGroupData[{
+Cell[697, 27, 31, 0, 55, "Section"],
+Cell[731, 29, 389, 9, 35, "Text"],
+Cell[1123, 40, 634, 10, 65, "Text"],
+Cell[1760, 52, 890, 16, 95, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2687, 73, 85, 1, 55, "Section",
+ CellTags->"Section1"],
+Cell[2775, 76, 225, 4, 35, "Text"],
+Cell[3003, 82, 230, 4, 35, "Text"],
+Cell[CellGroupData[{
+Cell[3258, 90, 85, 2, 28, "Input"],
+Cell[3346, 94, 34, 0, 28, "Output"]
+}, Open  ]],
+Cell[3395, 97, 109, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[3529, 104, 109, 3, 28, "Input"],
+Cell[3641, 109, 54, 1, 47, "Output"]
+}, Open  ]],
+Cell[3710, 113, 551, 13, 51, "Text"],
+Cell[CellGroupData[{
+Cell[4286, 130, 139, 4, 28, "Input"],
+Cell[4428, 136, 47, 0, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4512, 141, 166, 5, 28, "Input"],
+Cell[4681, 148, 88, 1, 30, "Output"]
+}, Open  ]],
+Cell[4784, 152, 338, 8, 36, "Text"],
+Cell[CellGroupData[{
+Cell[5147, 164, 111, 3, 28, "Input"],
+Cell[5261, 169, 49, 0, 30, "Output"]
+}, Open  ]],
+Cell[5325, 172, 342, 10, 35, "Text"],
+Cell[5670, 184, 268, 8, 29, "Input",
+ InitializationCell->True],
+Cell[5941, 194, 88, 2, 20, "Text"],
+Cell[CellGroupData[{
+Cell[6054, 200, 144, 4, 29, "Input"],
+Cell[6201, 206, 116, 3, 33, "Output"]
+}, Open  ]],
+Cell[6332, 212, 544, 14, 36, "Text"],
+Cell[CellGroupData[{
+Cell[6901, 230, 296, 9, 29, "Input",
+ InitializationCell->True],
+Cell[7200, 241, 948, 24, 73, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8185, 270, 73, 1, 29, "Input"],
+Cell[8261, 273, 830, 17, 222, "Output"]
+}, Open  ]],
+Cell[9106, 293, 211, 6, 21, "Text"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[9354, 304, 64, 1, 35, "Section",
+ CellTags->"Section2"],
+Cell[9421, 307, 151, 5, 20, "Text"],
+Cell[9575, 314, 340, 6, 50, "Text"],
+Cell[CellGroupData[{
+Cell[9940, 324, 169, 5, 28, "Input"],
+Cell[10112, 331, 46, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10195, 336, 71, 1, 32, "Subsection",
+ CellTags->"Section2a"],
+Cell[10269, 339, 443, 12, 35, "Text"],
+Cell[10715, 353, 156, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[10896, 360, 76, 0, 18, "Subsubsection"],
+Cell[10975, 362, 1158, 27, 83, "Text"],
+Cell[12136, 391, 1012, 22, 83, "Text"],
+Cell[13151, 415, 99, 2, 28, "myCode"],
+Cell[13253, 419, 681, 20, 52, "Text"],
+Cell[13937, 441, 985, 22, 67, "Text"],
+Cell[14925, 465, 259, 7, 35, "Text"],
+Cell[CellGroupData[{
+Cell[15209, 476, 232, 6, 29, "Input"],
+Cell[15444, 484, 47, 0, 28, "Output"]
+}, Open  ]],
+Cell[15506, 487, 92, 2, 20, "Text"],
+Cell[15601, 491, 549, 10, 51, "Text"],
+Cell[CellGroupData[{
+Cell[16175, 505, 206, 5, 29, "Input"],
+Cell[16384, 512, 47, 0, 28, "Output"]
+}, Open  ]],
+Cell[16446, 515, 1240, 33, 88, "Text"],
+Cell[CellGroupData[{
+Cell[17711, 552, 318, 9, 29, "Input"],
+Cell[18032, 563, 49, 1, 46, "Output"]
+}, Open  ]],
+Cell[18096, 567, 954, 23, 81, "Text"],
+Cell[CellGroupData[{
+Cell[19075, 594, 210, 5, 29, "Input"],
+Cell[19288, 601, 46, 0, 28, "Output"]
+}, Open  ]],
+Cell[19349, 604, 335, 7, 35, "Text"],
+Cell[CellGroupData[{
+Cell[19709, 615, 275, 7, 29, "Input"],
+Cell[19987, 624, 37, 0, 28, "Output"]
+}, Open  ]],
+Cell[20039, 627, 475, 12, 50, "Text"],
+Cell[CellGroupData[{
+Cell[20539, 643, 413, 12, 45, "Input"],
+Cell[20955, 657, 33, 0, 28, "Output"]
+}, Open  ]],
+Cell[21003, 660, 184, 7, 21, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21224, 672, 47, 0, 18, "Subsubsection"],
+Cell[21274, 674, 396, 11, 36, "Text"],
+Cell[21673, 687, 1247, 41, 55, "Text"],
+Cell[22923, 730, 433, 14, 35, "Text"],
+Cell[CellGroupData[{
+Cell[23381, 748, 183, 5, 28, "Input"],
+Cell[23567, 755, 2221, 40, 243, "Output"]
+}, Open  ]],
+Cell[25803, 798, 363, 10, 21, "Text"],
+Cell[CellGroupData[{
+Cell[26191, 812, 355, 10, 29, "Input"],
+Cell[26549, 824, 1973, 38, 238, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[28571, 868, 50, 0, 18, "Subsubsection"],
+Cell[28624, 870, 902, 27, 53, "Text"],
+Cell[CellGroupData[{
+Cell[29551, 901, 289, 8, 29, "Input"],
+Cell[29843, 911, 46, 0, 28, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29938, 917, 57, 0, 18, "Subsubsection"],
+Cell[29998, 919, 528, 14, 37, "Text"],
+Cell[30529, 935, 367, 8, 36, "Text"],
+Cell[CellGroupData[{
+Cell[30921, 947, 324, 7, 28, "Input",
+ InitializationCell->True],
+Cell[31248, 956, 264, 5, 28, "Output"]
+}, Open  ]],
+Cell[31527, 964, 318, 7, 36, "Text"],
+Cell[CellGroupData[{
+Cell[31870, 975, 145, 3, 29, "Input",
+ InitializationCell->True],
+Cell[32018, 980, 546, 18, 29, "Output"]
+}, Open  ]],
+Cell[32579, 1001, 485, 11, 51, "Text"],
+Cell[CellGroupData[{
+Cell[33089, 1016, 173, 4, 29, "Input"],
+Cell[33265, 1022, 48, 1, 46, "Output"]
+}, Open  ]],
+Cell[33328, 1026, 750, 21, 73, "Text"],
+Cell[34081, 1049, 386, 10, 36, "Text"],
+Cell[34470, 1061, 441, 13, 29, "myCode"],
+Cell[34914, 1076, 769, 20, 76, "Text"],
+Cell[35686, 1098, 289, 8, 29, "myCode"],
+Cell[35978, 1108, 282, 7, 36, "Text"],
+Cell[CellGroupData[{
+Cell[36285, 1119, 368, 10, 29, "Input"],
+Cell[36656, 1131, 48, 1, 47, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36753, 1138, 58, 0, 18, "Subsubsection"],
+Cell[36814, 1140, 784, 20, 65, "Text"],
+Cell[37601, 1162, 160, 3, 20, "Text"],
+Cell[37764, 1167, 611, 18, 45, "Input",
+ InitializationCell->True],
+Cell[38378, 1187, 152, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[38555, 1194, 315, 10, 29, "Input",
+ InitializationCell->True],
+Cell[38873, 1206, 49, 1, 47, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38971, 1213, 33, 0, 18, "Subsubsection"],
+Cell[39007, 1215, 466, 11, 51, "Text"],
+Cell[39476, 1228, 628, 11, 80, "Text"],
+Cell[40107, 1241, 424, 11, 36, "Text"],
+Cell[CellGroupData[{
+Cell[40556, 1256, 139, 3, 28, "Input"],
+Cell[40698, 1261, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[40741, 1264, 182, 4, 35, "Text"],
+Cell[40926, 1270, 256, 8, 28, "Input",
+ InitializationCell->True],
+Cell[41185, 1280, 658, 16, 52, "Text"],
+Cell[CellGroupData[{
+Cell[41868, 1300, 274, 9, 29, "Input",
+ InitializationCell->True],
+Cell[42145, 1311, 9913, 314, 234, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[52119, 1632, 90, 2, 26, "Subsection",
+ PageBreakWithin->False,
+ CellTags->"Section2b"],
+Cell[52212, 1636, 1031, 28, 80, "Text",
+ PageBreakAbove->False,
+ PageBreakWithin->False],
+Cell[CellGroupData[{
+Cell[53268, 1668, 55, 0, 18, "Subsubsection"],
+Cell[53326, 1670, 1525, 57, 59, "Text"],
+Cell[54854, 1729, 859, 36, 35, "Text"],
+Cell[55716, 1767, 2525, 80, 122, "Text"],
+Cell[58244, 1849, 338, 10, 21, "Text"],
+Cell[58585, 1861, 1877, 52, 213, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[60499, 1918, 51, 0, 18, "Subsubsection"],
+Cell[60553, 1920, 1607, 36, 125, "Text"],
+Cell[CellGroupData[{
+Cell[62185, 1960, 123, 4, 28, "Input"],
+Cell[62311, 1966, 50, 0, 30, "Output"]
+}, Open  ]],
+Cell[62376, 1969, 52, 0, 20, "Text"],
+Cell[62431, 1971, 1021, 27, 138, "Input",
+ InitializationCell->True],
+Cell[63455, 2000, 624, 15, 52, "Text"],
+Cell[64082, 2017, 395, 12, 36, "Text"],
+Cell[CellGroupData[{
+Cell[64502, 2033, 62, 1, 28, "Input"],
+Cell[64567, 2036, 33, 0, 28, "Output"]
+}, Open  ]],
+Cell[64615, 2039, 52, 0, 20, "Text"],
+Cell[CellGroupData[{
+Cell[64692, 2043, 66, 1, 28, "Input"],
+Cell[64761, 2046, 40, 0, 28, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[64874, 2054, 77, 1, 35, "Section",
+ CellTags->"Section3"],
+Cell[64954, 2057, 567, 22, 35, "Text"],
+Cell[65524, 2081, 574, 20, 51, "Equation"],
+Cell[66101, 2103, 204, 6, 20, "Text"],
+Cell[66308, 2111, 914, 28, 61, "Text"],
+Cell[67225, 2141, 382, 13, 51, "Equation"],
+Cell[67610, 2156, 150, 3, 20, "Text"],
+Cell[67763, 2161, 442, 9, 50, "Text"],
+Cell[68208, 2172, 1471, 21, 155, "Text"],
+Cell[CellGroupData[{
+Cell[69704, 2197, 39, 0, 18, "Subsubsection"],
+Cell[69746, 2199, 695, 11, 65, "Text"],
+Cell[70444, 2212, 387, 11, 36, "Text"],
+Cell[70834, 2225, 240, 6, 29, "Input"],
+Cell[71077, 2233, 240, 6, 29, "Input"],
+Cell[71320, 2241, 230, 6, 29, "Input"],
+Cell[71553, 2249, 1270, 30, 98, "Text"],
+Cell[72826, 2281, 542, 11, 51, "Text"],
+Cell[73371, 2294, 156, 4, 29, "Input"],
+Cell[73530, 2300, 156, 4, 29, "Input"],
+Cell[73689, 2306, 152, 4, 29, "Input"],
+Cell[73844, 2312, 800, 20, 53, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74681, 2337, 53, 0, 18, "Subsubsection"],
+Cell[74737, 2339, 542, 16, 41, "Text"],
+Cell[75282, 2357, 1255, 41, 73, "Text"],
+Cell[76540, 2400, 219, 7, 21, "Text"],
+Cell[CellGroupData[{
+Cell[76784, 2411, 64, 1, 29, "Input"],
+Cell[76851, 2414, 30, 0, 28, "Output"]
+}, Open  ]],
+Cell[76896, 2417, 274, 5, 35, "Text"],
+Cell[77173, 2424, 588, 11, 51, "Text"],
+Cell[CellGroupData[{
+Cell[77786, 2439, 110, 2, 29, "Input"],
+Cell[77899, 2443, 32, 0, 28, "Output"]
+}, Open  ]],
+Cell[77946, 2446, 138, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[78109, 2453, 82, 2, 28, "Input"],
+Cell[78194, 2457, 713, 9, 268, "Output"]
+}, Open  ]],
+Cell[78922, 2469, 392, 8, 36, "Text"],
+Cell[CellGroupData[{
+Cell[79339, 2481, 155, 4, 29, "Input"],
+Cell[79497, 2487, 32, 0, 28, "Output"]
+}, Open  ]],
+Cell[79544, 2490, 391, 6, 35, "Text"],
+Cell[79938, 2498, 225, 5, 30, "myCode"],
+Cell[80166, 2505, 2571, 59, 145, "Text"],
+Cell[82740, 2566, 291, 7, 21, "Text"],
+Cell[CellGroupData[{
+Cell[83056, 2577, 353, 9, 46, "Input"],
+Cell[83412, 2588, 31, 0, 28, "Output"]
+}, Open  ]],
+Cell[83458, 2591, 526, 12, 51, "Text"],
+Cell[CellGroupData[{
+Cell[84009, 2607, 361, 10, 46, "Input"],
+Cell[84373, 2619, 31, 0, 28, "Output"]
+}, Open  ]],
+Cell[84419, 2622, 297, 10, 21, "Text"],
+Cell[CellGroupData[{
+Cell[84741, 2636, 413, 11, 46, "Input"],
+Cell[85157, 2649, 32, 0, 28, "Output"]
+}, Open  ]],
+Cell[85204, 2652, 422, 11, 37, "Text"],
+Cell[85629, 2665, 503, 13, 61, "Input",
+ InitializationCell->True],
+Cell[86135, 2680, 218, 4, 20, "Text"],
+Cell[CellGroupData[{
+Cell[86378, 2688, 149, 4, 28, "Input"],
+Cell[86530, 2694, 32, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[86599, 2699, 152, 4, 28, "Input"],
+Cell[86754, 2705, 31, 0, 28, "Output"]
+}, Open  ]],
+Cell[86800, 2708, 604, 15, 51, "Text"],
+Cell[87407, 2725, 762, 23, 92, "Input",
+ InitializationCell->True],
+Cell[88172, 2750, 159, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[88356, 2757, 108, 2, 29, "Input"],
+Cell[88467, 2761, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[88510, 2764, 188, 4, 20, "Text"],
+Cell[CellGroupData[{
+Cell[88723, 2772, 170, 4, 29, "Input"],
+Cell[88896, 2778, 50, 1, 47, "Output"]
+}, Open  ]],
+Cell[88961, 2782, 192, 4, 20, "Text"],
+Cell[CellGroupData[{
+Cell[89178, 2790, 170, 4, 29, "Input"],
+Cell[89351, 2796, 51, 1, 47, "Output"]
+}, Open  ]],
+Cell[89417, 2800, 212, 4, 35, "Text"],
+Cell[CellGroupData[{
+Cell[89654, 2808, 230, 8, 28, "Input"],
+Cell[89887, 2818, 46, 0, 28, "Output"]
+}, Open  ]],
+Cell[89948, 2821, 209, 4, 35, "Text"],
+Cell[90160, 2827, 1114, 29, 141, "Input",
+ InitializationCell->True],
+Cell[91277, 2858, 175, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[91477, 2865, 87, 1, 29, "Input"],
+Cell[91567, 2868, 46, 0, 28, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[91662, 2874, 45, 0, 18, "Subsubsection"],
+Cell[91710, 2876, 825, 25, 50, "Text"],
+Cell[92538, 2903, 842, 27, 83, "Equation"],
+Cell[93383, 2932, 580, 21, 35, "Text"],
+Cell[CellGroupData[{
+Cell[93988, 2957, 242, 8, 28, "Input"],
+Cell[94233, 2967, 33, 0, 28, "Output"]
+}, Open  ]],
+Cell[94281, 2970, 275, 5, 20, "Text"],
+Cell[CellGroupData[{
+Cell[94581, 2979, 449, 14, 45, "Input"],
+Cell[95033, 2995, 56, 1, 47, "Output"]
+}, Open  ]],
+Cell[95104, 2999, 613, 12, 67, "Text"],
+Cell[95720, 3013, 1577, 42, 171, "Input",
+ InitializationCell->True],
+Cell[97300, 3057, 287, 5, 20, "Text"],
+Cell[CellGroupData[{
+Cell[97612, 3066, 176, 4, 29, "Input"],
+Cell[97791, 3072, 46, 0, 28, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[97886, 3078, 54, 0, 18, "Subsubsection"],
+Cell[97943, 3080, 450, 9, 36, "Text"],
+Cell[CellGroupData[{
+Cell[98418, 3093, 85, 2, 28, "Input"],
+Cell[98506, 3097, 694, 8, 251, "Output"]
+}, Open  ]],
+Cell[99215, 3108, 981, 20, 83, "Text"],
+Cell[CellGroupData[{
+Cell[100221, 3132, 298, 9, 30, "Input"],
+Cell[100522, 3143, 2677, 41, 157, "Output"]
+}, Open  ]],
+Cell[103214, 3187, 195, 6, 21, "Text"],
+Cell[CellGroupData[{
+Cell[103434, 3197, 122, 2, 29, "Input"],
+Cell[103559, 3201, 2095, 31, 141, "Output"]
+}, Open  ]],
+Cell[105669, 3235, 57, 0, 20, "Text"],
+Cell[CellGroupData[{
+Cell[105751, 3239, 141, 3, 29, "Input"],
+Cell[105895, 3244, 149, 3, 29, "Output"]
+}, Open  ]],
+Cell[106059, 3250, 141, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[106225, 3257, 88, 1, 29, "Input"],
+Cell[106316, 3260, 31, 0, 28, "Output"]
+}, Open  ]],
+Cell[106362, 3263, 43, 0, 20, "Text"],
+Cell[106408, 3265, 817, 21, 109, "Input",
+ InitializationCell->True],
+Cell[107228, 3288, 111, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[107364, 3295, 150, 4, 29, "Input"],
+Cell[107517, 3301, 30, 0, 28, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[107608, 3308, 73, 1, 35, "Section",
+ CellTags->"Section4"],
+Cell[107684, 3311, 424, 10, 50, "Text"],
+Cell[108111, 3323, 380, 10, 36, "Text"],
+Cell[108494, 3335, 385, 12, 36, "Text"],
+Cell[CellGroupData[{
+Cell[108904, 3351, 231, 6, 29, "Input"],
+Cell[109138, 3359, 53, 1, 47, "Output"]
+}, Open  ]],
+Cell[109206, 3363, 677, 17, 65, "Text"],
+Cell[CellGroupData[{
+Cell[109908, 3384, 231, 6, 29, "Input"],
+Cell[110142, 3392, 1655, 49, 49, "Output"]
+}, Open  ]],
+Cell[111812, 3444, 65, 0, 20, "Text"],
+Cell[111880, 3446, 619, 18, 37, "Text"],
+Cell[CellGroupData[{
+Cell[112524, 3468, 129, 3, 28, "Input"],
+Cell[112656, 3473, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[112721, 3478, 133, 3, 28, "Input"],
+Cell[112857, 3483, 29, 0, 28, "Output"]
+}, Open  ]],
+Cell[112901, 3486, 62, 0, 20, "Text"],
+Cell[CellGroupData[{
+Cell[112988, 3490, 118, 2, 28, "Input"],
+Cell[113109, 3494, 84, 3, 50, "Output"]
+}, Open  ]],
+Cell[113208, 3500, 266, 9, 20, "Text"],
+Cell[CellGroupData[{
+Cell[113499, 3513, 138, 4, 28, "Input"],
+Cell[113640, 3519, 49, 1, 47, "Output"]
+}, Open  ]],
+Cell[113704, 3523, 707, 16, 52, "Text"],
+Cell[114414, 3541, 214, 7, 20, "Text"],
+Cell[CellGroupData[{
+Cell[114653, 3552, 200, 5, 29, "Input"],
+Cell[114856, 3559, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[114899, 3562, 336, 11, 21, "Text"],
+Cell[CellGroupData[{
+Cell[115260, 3577, 224, 6, 29, "Input"],
+Cell[115487, 3585, 29, 0, 28, "Output"]
+}, Open  ]],
+Cell[115531, 3588, 444, 15, 26, "Text"],
+Cell[CellGroupData[{
+Cell[116000, 3607, 257, 7, 29, "Input",
+ InitializationCell->True],
+Cell[116260, 3616, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[116325, 3621, 278, 8, 29, "Input"],
+Cell[116606, 3631, 29, 0, 28, "Output"]
+}, Open  ]],
+Cell[116650, 3634, 63, 0, 20, "Text"],
+Cell[116716, 3636, 180, 5, 28, "Input",
+ InitializationCell->True],
+Cell[116899, 3643, 181, 5, 28, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[117105, 3652, 352, 11, 29, "Input",
+ InitializationCell->True],
+Cell[117460, 3665, 31, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[117528, 3670, 408, 14, 29, "Input"],
+Cell[117939, 3686, 46, 0, 28, "Output"]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[118034, 3692, 115, 3, 35, "Section",
+ CellTags->"Solutions"],
+Cell[CellGroupData[{
+Cell[118174, 3699, 68, 1, 32, "Subsection",
+ CellTags->"SolutionsCP7"],
+Cell[118245, 3702, 386, 10, 55, "Problem"],
+Cell[118634, 3714, 494, 10, 51, "Text"],
+Cell[119131, 3726, 734, 17, 67, "Text"],
+Cell[CellGroupData[{
+Cell[119890, 3747, 90, 2, 29, "Input"],
+Cell[119983, 3751, 160, 4, 28, "Output"]
+}, Open  ]],
+Cell[120158, 3758, 796, 24, 53, "Text"],
+Cell[CellGroupData[{
+Cell[120979, 3786, 114, 3, 29, "Input"],
+Cell[121096, 3791, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[121139, 3794, 769, 17, 67, "Text"],
+Cell[CellGroupData[{
+Cell[121933, 3815, 148, 4, 28, "Input"],
+Cell[122084, 3821, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[122127, 3824, 156, 3, 20, "Text"],
+Cell[122286, 3829, 75, 0, 20, "Text"],
+Cell[122364, 3831, 1175, 30, 170, "Input",
+ InitializationCell->True],
+Cell[123542, 3863, 191, 6, 20, "Text"],
+Cell[123736, 3871, 234, 7, 28, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[123995, 3882, 99, 2, 29, "Input",
+ InitializationCell->True],
+Cell[124097, 3886, 3002, 59, 237, "Output"]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[127148, 3951, 68, 1, 26, "Subsection",
+ CellTags->"SolutionsCP9"],
+Cell[127219, 3954, 364, 11, 55, "Problem"],
+Cell[127586, 3967, 753, 23, 51, "Text"],
+Cell[128342, 3992, 204, 6, 29, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[128571, 4002, 61, 1, 29, "Input"],
+Cell[128635, 4005, 49, 0, 30, "Output"]
+}, Open  ]],
+Cell[128699, 4008, 290, 5, 35, "Text"],
+Cell[128992, 4015, 237, 7, 29, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[129254, 4026, 85, 2, 29, "Input"],
+Cell[129342, 4030, 49, 0, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[129428, 4035, 85, 2, 29, "Input"],
+Cell[129516, 4039, 49, 0, 28, "Output"]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[129614, 4045, 80, 1, 26, "Subsection",
+ CellTags->"SolutionsCE3"],
+Cell[129697, 4048, 285, 5, 55, "Problem"],
+Cell[129985, 4055, 128, 4, 20, "Text"],
+Cell[CellGroupData[{
+Cell[130138, 4063, 84, 1, 16, "Item1Numbered"],
+Cell[130225, 4066, 170, 3, 29, "Item1Numbered"],
+Cell[130398, 4071, 71, 0, 16, "Item1Numbered"]
+}, Open  ]],
+Cell[130484, 4074, 69, 0, 20, "Text"],
+Cell[130556, 4076, 434, 11, 36, "Text"],
+Cell[CellGroupData[{
+Cell[131015, 4091, 92, 2, 29, "Input"],
+Cell[131110, 4095, 169, 4, 28, "Output"]
+}, Open  ]],
+Cell[131294, 4102, 225, 5, 36, "Text"],
+Cell[CellGroupData[{
+Cell[131544, 4111, 141, 4, 29, "Input"],
+Cell[131688, 4117, 660, 22, 44, "Output"]
+}, Open  ]],
+Cell[132363, 4142, 1293, 36, 68, "Text"],
+Cell[CellGroupData[{
+Cell[133681, 4182, 244, 7, 29, "Input"],
+Cell[133928, 4191, 197, 4, 28, "Output"]
+}, Open  ]],
+Cell[134140, 4198, 102, 4, 21, "Text"],
+Cell[CellGroupData[{
+Cell[134267, 4206, 176, 5, 29, "Input"],
+Cell[134446, 4213, 195, 4, 28, "Output"]
+}, Open  ]],
+Cell[134656, 4220, 522, 15, 37, "Text"],
+Cell[CellGroupData[{
+Cell[135203, 4239, 246, 8, 29, "Input"],
+Cell[135452, 4249, 28, 0, 28, "Output"]
+}, Open  ]],
+Cell[135495, 4252, 161, 3, 20, "Text"],
+Cell[CellGroupData[{
+Cell[135681, 4259, 307, 10, 29, "Input"],
+Cell[135991, 4271, 32, 0, 28, "Output"]
+}, Open  ]],
+Cell[136038, 4274, 214, 4, 35, "Text"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[136289, 4283, 80, 1, 26, "Subsection",
+ CellTags->"SolutionsCE4"],
+Cell[136372, 4286, 259, 4, 55, "Problem"],
+Cell[136634, 4292, 530, 13, 50, "Text"],
+Cell[137167, 4307, 486, 15, 47, "Equation"],
+Cell[137656, 4324, 371, 14, 35, "Text"],
+Cell[138030, 4340, 1007, 28, 125, "Input",
+ InitializationCell->True],
+Cell[139040, 4370, 202, 4, 35, "Text"],
+Cell[CellGroupData[{
+Cell[139267, 4378, 64, 1, 29, "Input"],
+Cell[139334, 4381, 29, 0, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[139400, 4386, 64, 1, 29, "Input"],
+Cell[139467, 4389, 29, 0, 28, "Output"]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[139557, 4396, 52, 1, 35, "Section",
+ CellTags->"Exercises"],
+Cell[CellGroupData[{
+Cell[139634, 4401, 351, 12, 33, "Item1Exercise"],
+Cell[CellGroupData[{
+Cell[140010, 4417, 161, 7, 18, "Item2Exercise"],
+Cell[140174, 4426, 159, 7, 18, "Item2Exercise"],
+Cell[140336, 4435, 161, 7, 18, "Item2Exercise"],
+Cell[140500, 4444, 166, 7, 18, "Item2Exercise"],
+Cell[140669, 4453, 161, 7, 18, "Item2Exercise"]
+}, Open  ]],
+Cell[140845, 4463, 278, 7, 33, "Item1Exercise"],
+Cell[141126, 4472, 533, 13, 46, "Item1Exercise"],
+Cell[141662, 4487, 445, 7, 59, "Item1Exercise"],
+Cell[142110, 4496, 641, 16, 62, "Item1Exercise"],
+Cell[142754, 4514, 336, 7, 47, "Item1Exercise"],
+Cell[143093, 4523, 662, 12, 74, "Item1Exercise"]
+}, Open  ]]
+}, Closed]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
